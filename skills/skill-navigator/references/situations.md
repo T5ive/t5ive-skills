@@ -25,6 +25,14 @@ Reduces token usage 60-75% by switching Claude's prose to concise Thai while kee
 
 ---
 
+## Don't Know Which Skill to Use
+
+**Invoke:** `/ask-matt`
+
+Routes over all user-invoked skills in mattpocock/skills. Describes situation → get the right chain.
+
+---
+
 ## New Feature — No Codebase
 
 **Chain:** `/grill-me` → `/tdd`
@@ -42,11 +50,24 @@ Never write all tests first (horizontal slicing = imagined behavior).
 
 **Chain:** `/setup-matt-pocock-skills` (once per repo) → `/grill-with-docs` → `/tdd`
 
-**setup-matt-pocock-skills** — configures issue tracker, triage labels, CONTEXT.md location.
+**setup-matt-pocock-skills** — configures issue tracker, triage labels, CONTEXT.md location. Run once per repo.
 Required before: `/to-issues`, `/to-prd`, `/triage`, `/diagnose`, `/tdd`, `/improve-codebase-architecture`, `/zoom-out`.
 
 **grill-with-docs** — same as grill-me but reads CONTEXT.md + ADRs and updates them inline.
 Keeps naming consistent with project domain language.
+
+---
+
+## Bug — Hard / Performance / Regression (Deep Diagnosis)
+
+**Chain:** `/diagnosing-bugs` → `/post-mortem`
+
+**diagnosing-bugs** (model-invoked) — disciplined diagnosis loop:
+1. Reproduce → minimise → hypothesise → instrument → fix → regression-test
+Adds: minimisation step, ranked hypotheses, mandatory `[DEBUG-xxx]` tagging.
+
+vs `/debug-mantra`: debug-mantra is 4 quick mantras; diagnosing-bugs is the full 6-phase loop for harder problems.
+vs `/diagnose` (local skill): diagnosing-bugs is the mattpocock upstream version.
 
 ---
 
@@ -115,6 +136,40 @@ Keeps: impact (who, how bad), status, next steps, ETA.
 
 ---
 
+## Learn a Concept / Skill
+
+**Invoke:** `/teach`
+
+Multi-session teaching. Uses current directory as stateful workspace. Tracks progress across sessions.
+
+---
+
+## Sharpen Domain Terminology / ADRs
+
+**Chain:** `/grill-with-docs` or `/domain-modeling`
+
+**grill-with-docs** (user-invoked) — grilling session that builds domain model inline. Updates CONTEXT.md + ADRs during the conversation.
+
+**domain-modeling** (model-invoked) — challenge terms against glossary, stress-test with edge-case scenarios, update CONTEXT.md + ADRs. Agent reaches for this automatically when domain consistency matters.
+
+---
+
+## Design a Module with a Clean Interface
+
+**Invoke:** `/codebase-design` (model-invoked)
+
+Shared discipline for designing deep modules: lots of behaviour behind a small interface, placed at a clean seam, testable through that interface.
+
+---
+
+## Write or Edit a Skill
+
+**Invoke:** `/writing-great-skills`
+
+Reference for vocabulary and principles that make a skill predictable. Use when authoring or editing skill SKILL.md files.
+
+---
+
 ## Understand / Improve Codebase
 
 - `/zoom-out` — explain code in context of whole system
@@ -128,6 +183,18 @@ Keeps: impact (who, how bad), status, next steps, ETA.
 
 - `/to-prd` — synthesizes conversation into PRD → submits as GitHub issue
 - `/to-issues` — breaks PRD into vertical-slice GitHub issues (not horizontal layers)
+
+---
+
+## Prototype (Throwaway / UI Variations)
+
+**Invoke:** `/prototype`
+
+Two modes:
+- **Terminal app** — for state/business-logic questions (fast, no UI)
+- **UI variations** — several radically different UI designs, all togglable from one route
+
+Use to flesh out design before committing to an implementation.
 
 ---
 
