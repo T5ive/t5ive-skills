@@ -1,0 +1,21 @@
+{
+  "name": "t5ive-skills",
+  "interface": {
+    "displayName": "t5ive-skills"
+  },
+  "plugins": [
+    {
+      "name": "t5ive-skills",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/T5ive/t5ive-skills",
+        "ref": "main"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

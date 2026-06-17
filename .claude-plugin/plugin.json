@@ -1,0 +1,13 @@
+{
+  "name": "t5ive-skills",
+  "version": "1.0.0",
+  "description": "Personal Claude Code skills by T5ive — skill navigator and git commit message generator.",
+  "author": {
+    "name": "T5ive"
+  },
+  "license": "MIT",
+  "skills": [
+    "./skills/skill-navigator",
+    "./skills/git-commit"
+  ]
+}

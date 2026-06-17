@@ -1,0 +1,35 @@
+{
+  "name": "t5ive-skills",
+  "version": "1.0.0",
+  "description": "Personal Codex skills by T5ive: skill navigator and Thai git commit helper.",
+  "author": {
+    "name": "T5ive",
+    "url": "https://github.com/T5ive"
+  },
+  "homepage": "https://github.com/T5ive/t5ive-skills",
+  "repository": "https://github.com/T5ive/t5ive-skills",
+  "license": "MIT",
+  "keywords": [
+    "skills",
+    "workflow",
+    "codex"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "t5ive-skills",
+    "shortDescription": "Personal Codex skills by T5ive.",
+    "longDescription": "t5ive-skills bundles Skill Navigator for choosing skill workflows and git-commit for Thai Conventional Commit messages.",
+    "developerName": "T5ive",
+    "category": "Productivity",
+    "capabilities": [
+      "Skills"
+    ],
+    "websiteURL": "https://github.com/T5ive/t5ive-skills",
+    "defaultPrompt": [
+      "Which skill should I use for this?",
+      "Help me choose a skill workflow.",
+      "Map this situation to a skill chain."
+    ],
+    "brandColor": "#2563EB"
+  }
+}
