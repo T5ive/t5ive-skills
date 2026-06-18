@@ -11,13 +11,13 @@
     {
       "name": "skill-navigator",
       "description": "Maps situations (new feature, bug, review, management report) to the right skill chain.",
-      "source": "./skills/skill-navigator",
+      "source": "./",
       "category": "productivity"
     },
     {
       "name": "git-commit",
       "description": "Generates Conventional Commits + emoji messages written in Thai.",
-      "source": "./skills/git-commit",
+      "source": "./",
       "category": "productivity"
     }
   ]

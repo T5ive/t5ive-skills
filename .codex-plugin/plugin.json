@@ -1,6 +1,6 @@
 {
   "name": "t5ive-skills",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Personal Codex skills by T5ive: skill navigator and Thai git commit helper.",
   "author": {
     "name": "T5ive",
@@ -30,6 +30,8 @@
       "Help me choose a skill workflow.",
       "Map this situation to a skill chain."
     ],
-    "brandColor": "#2563EB"
+    "brandColor": "#2563EB",
+    "composerIcon": "./assets/logo.png",
+    "logo": "./assets/logo.png"
   }
 }
