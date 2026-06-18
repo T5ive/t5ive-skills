@@ -1,5 +1,6 @@
 {
   "name": "t5ive-skills",
+  "version": "1.0.1",
   "interface": {
     "displayName": "t5ive-skills"
   },

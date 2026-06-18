@@ -1,6 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "t5ive-skills",
+  "version": "1.0.1",
   "description": "Personal Claude Code skills by T5ive.",
   "owner": {
     "name": "T5ive",
