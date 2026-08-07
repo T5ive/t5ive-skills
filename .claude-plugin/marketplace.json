@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "t5ive-skills",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Personal Claude Code skills by T5ive.",
   "owner": {
     "name": "T5ive",
@@ -10,7 +10,7 @@
   "plugins": [
     {
       "name": "skill-navigator",
-      "description": "Maps situations (new feature, bug, review, management report) to the right skill chain.",
+      "description": "Maps situations (new feature, bug, review, tickets) to the right skill chain.",
       "source": "./",
       "category": "productivity"
     },
