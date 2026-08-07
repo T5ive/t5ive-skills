@@ -48,13 +48,27 @@ Never write all tests first (horizontal slicing = imagined behavior).
 
 ## New Feature — Existing Codebase
 
-**Chain:** `/setup-matt-pocock-skills` (once per repo) → `/grill-with-docs` → `/tdd`
+**Chain:** `/setup-matt-pocock-skills` (once per repo) → `/grill-with-docs` → `/to-spec` → `/to-tickets` → `/implement`
 
 **setup-matt-pocock-skills** — configures issue tracker, triage labels, CONTEXT.md location. Run once per repo.
-Required before: `/to-issues`, `/to-prd`, `/triage`, `/diagnose`, `/tdd`, `/improve-codebase-architecture`, `/zoom-out`.
+Required before: `/to-spec`, `/to-tickets`, `/triage`, `/diagnosing-bugs`, `/tdd`, `/improve-codebase-architecture`.
 
 **grill-with-docs** — same as grill-me but reads CONTEXT.md + ADRs and updates them inline.
 Keeps naming consistent with project domain language.
+
+**to-spec** — synthesizes the conversation into a spec, published to your issue tracker. (Formerly `to-prd`.)
+
+**to-tickets** — breaks a spec/plan into tracer-bullet tickets with declared blocking edges. (Merged from `to-plan` + `to-issues`.)
+
+**implement** — builds work from specs/tickets, invoking `/tdd` at agreed points and closing each ticket with `/code-review`. This is the skill that actually writes the feature; `/tdd` and `/code-review` fire automatically inside it, no need to call them separately in this chain.
+
+---
+
+## Large / Unclear-Scope Effort
+
+**Invoke:** `/wayfinder`
+
+For work too big or ambiguous to spec directly. Plans the effort as a sequence of decision tickets, resolving one at a time until the path forward is clear enough to hand off to `/to-spec` → `/to-tickets` → `/implement`.
 
 ---
 
@@ -104,15 +118,17 @@ vs debug-mantra: diagnose adds Minimise + ranked Hypothesise + mandatory debug t
 
 ## Review / Before Merge
 
-**Chain:** `/scrutinize`
+**Chain:** `/scrutinize` or `/code-review`
 
-4 steps (no skipping):
+**scrutinize** (local skill) — 4 steps (no skipping):
 1. **Intent** — state goal in 1 sentence + ask if simpler approach exists (mandatory)
 2. **Trace** — walk real code path from entry, not just the diff
 3. **Verify** — each claim the PR makes: does traced path actually produce that behavior?
 4. **Report** — blocker → major → nit + verdict: ship / fix-then-ship / rework / reject
 
 Rules: no rubber-stamp, every claim cites `file:line`, no flattery.
+
+**code-review** (mattpocock, model-invoked) — reviews changes since a fixed point along two axes in parallel sub-agents: **Standards** (matches this repo's documented conventions?) and **Spec** (matches what the originating issue/spec asked for?). Reports both side by side. This is also what `/implement` calls automatically to close out a ticket.
 
 ---
 
@@ -122,17 +138,6 @@ Rules: no rubber-stamp, every claim cites `file:line`, no flattery.
 
 Summarizes: work done, decisions made, pending tasks, key context.
 Copy output into new session.
-
----
-
-## Report to Management
-
-**Chain:** `/management-talk` → specify channel
-
-Channels: `→ slack` · `→ jira` · `→ email` · `→ standup`
-
-Removes: function names, file paths, debug iterations, rejected hypotheses.
-Keeps: impact (who, how bad), status, next steps, ETA.
 
 ---
 
@@ -162,27 +167,70 @@ Shared discipline for designing deep modules: lots of behaviour behind a small i
 
 ---
 
-## Write or Edit a Skill
+## Write or Edit a Skill or Agent Doc
 
-**Invoke:** `/writing-great-skills`
+**Invoke:** `/writing-for-agents` (formerly `writing-great-skills`)
 
-Reference for vocabulary and principles that make a skill predictable. Use when authoring or editing skill SKILL.md files.
+Reference for vocabulary and principles that make agent-consumed documents predictable — skill SKILL.md files, AGENTS.md/CLAUDE.md, and other docs an agent reads rather than a human.
 
 ---
 
 ## Understand / Improve Codebase
 
-- `/zoom-out` — explain code in context of whole system
-- `/improve-codebase-architecture` — find refactor opportunities using CONTEXT.md + ADRs; use after `/diagnose` finds arch as root cause, or as periodic review
+- `/improve-codebase-architecture` — scans the codebase for deepening opportunities using CONTEXT.md + ADRs, presents candidates as an HTML report. Use after `/diagnosing-bugs` finds architecture as root cause, or as periodic review.
+
+(`/zoom-out` was removed upstream — went unused. For general code understanding, just ask directly; no dedicated skill covers it anymore.)
 
 ---
 
-## Break Spec into Issues
+## Break Spec into Tickets
 
-**Chain:** `/to-prd` → `/to-issues`
+**Chain:** `/to-spec` → `/to-tickets`
 
-- `/to-prd` — synthesizes conversation into PRD → submits as GitHub issue
-- `/to-issues` — breaks PRD into vertical-slice GitHub issues (not horizontal layers)
+- `/to-spec` — synthesizes conversation into a spec → submits to your issue tracker (formerly `/to-prd`)
+- `/to-tickets` — breaks a spec/plan into tracer-bullet tickets with declared blocking edges (merged from `/to-plan` + `/to-issues`; vertical slices, not horizontal layers)
+
+Typically followed by `/implement` to actually build the tickets.
+
+---
+
+## Async Questionnaire for Stakeholders
+
+**Invoke:** `/to-questionnaire`
+
+Converts decisions made in conversation into an async Markdown questionnaire for specific stakeholders to answer outside the session.
+
+---
+
+## Model Too Verbose / Answer Unclear
+
+**Invoke:** `/wait-what`
+
+Re-pitches an unclear or overlong response in plain English, using your project's CONTEXT.md vocabulary. Single-word trigger for "say that again, simpler."
+
+---
+
+## Research a Question Against Sources
+
+**Invoke:** `/research` (model-invoked)
+
+Investigates a question against high-trust primary sources, captures findings as a cited Markdown file in the repo. Use when reading legwork should be delegated and documented rather than answered from memory.
+
+---
+
+## Resolve Merge Conflicts
+
+**Invoke:** `/resolving-merge-conflicts` (model-invoked)
+
+Works through an in-progress git merge/rebase conflict hunk-by-hunk, resolving each by tracing the intent of both sides rather than guessing.
+
+---
+
+## Generate a Manual-Step Wizard
+
+**Invoke:** `/wizard` (model-invoked)
+
+Generates an interactive bash wizard for steps only a human can perform — provisioning infrastructure, setting up credentials/CI secrets, an unfamiliar third-party dashboard, a one-off migration. Don't use for steps the agent can do itself.
 
 ---
 
