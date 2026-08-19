@@ -65,13 +65,31 @@ EOF
 ```
 
 - **Title**: max 72 chars, Thai language, present tense imperative ("เพิ่ม" ไม่ใช่ "เพิ่มแล้ว")
-- **Body**: use real line breaks (not literal `\n`), include when there are important details
+- **Body**: include important details; use real line breaks via separate `-m` arguments or a heredoc, never literal `\n`.
 - **Scope**: include when the change targets a specific module/feature (optional)
 - **Footer**: always include Co-authored-by; add issue refs when relevant
 
 ---
 
 ## Types
+
+### Canonical emoji
+
+The rendered text may contain mojibake. Select the emoji by Unicode code point, never by guessing a corrupted glyph. Before `git commit`, compare the selected type against this map.
+
+| Type | Emoji | Unicode |
+|------|-------|---------|
+| `feat` | ✨ | `U+2728` |
+| `fix` | 🐞 | `U+1F41E` |
+| `refactor` | ♻️ | `U+267B U+FE0F` |
+| `perf` | 🚀 | `U+1F680` |
+| `docs` | 📝 | `U+1F4DD` |
+| `test` | 🧪 | `U+1F9EA` |
+| `style` | 🎨 | `U+1F3A8` |
+| `build` | 📦 | `U+1F4E6` |
+| `ci` | 🤖 | `U+1F916` |
+| `chore` | 🔧 | `U+1F527` |
+| `revert` | ⏪ | `U+23EA` |
 
 | Type | Emoji | When to use |
 |------|-------|-------------|
