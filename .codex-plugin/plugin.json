@@ -14,7 +14,7 @@
   "interface": {
     "displayName": "t5ive-skills",
     "shortDescription": "Workflow skills by T5ive.",
-    "longDescription": "Choose and run skill workflows, compare review approaches, grill decisions with selectable answers, and create Thai Conventional Commits.",
+    "longDescription": "Choose and run skill workflows, compare review approaches, grill decisions with selectable answers, create Thai Conventional Commits, and manage a markdown todo/ task system.",
     "developerName": "T5ive",
     "category": "Productivity",
     "capabilities": [
