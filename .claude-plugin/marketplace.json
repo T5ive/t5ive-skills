@@ -1,24 +1,18 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "t5ive-skills",
-  "version": "1.0.3",
-  "description": "Personal Claude Code skills by T5ive.",
+  "description": "T5ive skills for engineering and productivity workflows.",
   "owner": {
     "name": "T5ive",
     "url": "https://github.com/T5ive"
   },
   "plugins": [
     {
-      "name": "skill-navigator",
-      "description": "Maps situations (new feature, bug, review, tickets) to the right skill chain.",
+      "name": "t5ive-skills",
+      "description": "Workflow routing, review choices, interactive grilling, and Thai commit messages.",
       "source": "./",
-      "category": "productivity"
-    },
-    {
-      "name": "git-commit",
-      "description": "Generates Conventional Commits + emoji messages written in Thai.",
-      "source": "./",
-      "category": "productivity"
+      "category": "engineering",
+      "keywords": ["engineering", "productivity", "skills", "review", "grilling"]
     }
   ]
 }

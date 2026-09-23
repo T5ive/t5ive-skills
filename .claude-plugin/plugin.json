@@ -1,13 +1,20 @@
 {
   "name": "t5ive-skills",
-  "version": "1.0.3",
-  "description": "Personal Claude Code skills by T5ive — skill navigator and git commit message generator.",
+  "version": "1.1.0",
+  "description": "T5ive skills for choosing workflows, reviewing changes, grilling through decisions, and writing Thai commit messages.",
   "author": {
-    "name": "T5ive"
+    "name": "T5ive",
+    "url": "https://github.com/T5ive"
   },
+  "homepage": "https://github.com/T5ive/t5ive-skills",
+  "repository": "https://github.com/T5ive/t5ive-skills",
   "license": "MIT",
+  "keywords": ["skills", "engineering", "productivity", "workflows", "review", "grilling"],
   "skills": [
-    "./skills/skill-navigator",
-    "./skills/git-commit"
+    "./skills/engineering/skill-navigator",
+    "./skills/engineering/git-commit",
+    "./skills/engineering/review-with-choice",
+    "./skills/productivity/skill-guide",
+    "./skills/productivity/grill-with-choice"
   ]
 }

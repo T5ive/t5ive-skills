@@ -1,7 +1,7 @@
 {
   "name": "t5ive-skills",
-  "version": "1.0.3",
-  "description": "Personal Codex skills by T5ive: skill navigator and Thai git commit helper.",
+  "version": "1.1.0",
+  "description": "Personal workflow skills by T5ive for Codex.",
   "author": {
     "name": "T5ive",
     "url": "https://github.com/T5ive"
@@ -9,16 +9,12 @@
   "homepage": "https://github.com/T5ive/t5ive-skills",
   "repository": "https://github.com/T5ive/t5ive-skills",
   "license": "MIT",
-  "keywords": [
-    "skills",
-    "workflow",
-    "codex"
-  ],
+  "keywords": ["skills", "workflow", "engineering", "productivity", "codex"],
   "skills": "./skills/",
   "interface": {
     "displayName": "t5ive-skills",
-    "shortDescription": "Personal Codex skills by T5ive.",
-    "longDescription": "t5ive-skills bundles Skill Navigator for choosing skill workflows and git-commit for Thai Conventional Commit messages.",
+    "shortDescription": "Workflow skills by T5ive.",
+    "longDescription": "Choose and run skill workflows, compare review approaches, grill decisions with selectable answers, and create Thai Conventional Commits.",
     "developerName": "T5ive",
     "category": "Productivity",
     "capabilities": [
@@ -26,9 +22,9 @@
     ],
     "websiteURL": "https://github.com/T5ive/t5ive-skills",
     "defaultPrompt": [
-      "Which skill should I use for this?",
-      "Help me choose a skill workflow.",
-      "Map this situation to a skill chain."
+      "Choose and run a suitable skill workflow for this task.",
+      "Recommend a skill and wait for my choice.",
+      "Help me choose a review approach."
     ],
     "brandColor": "#2563EB",
     "composerIcon": "./assets/logo.png",
