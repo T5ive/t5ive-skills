@@ -15,7 +15,7 @@ Only what the board cannot show. jira/phase emptiness is visible on the board's 
 
 | Key | Argument | Flag a file when |
 |---|---|---|
-| Related paths | `paths` | `## Related files` is empty (Bases reads frontmatter only, so this never appears on the board) |
+| Related paths | `paths` | `## Related files` is empty and `stage` is neither `todo` nor `preop` (dev is still preparing those files) |
 | Done date | `done-date` | `status: done` and `done:` is empty (done files are filtered off the board, and sweep needs the date) |
 
 ## Workflow

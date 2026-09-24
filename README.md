@@ -11,13 +11,13 @@ T5ive's Codex and Claude Code plugin for skill routing, review workflows, intera
 | `review-with-choice` | Engineering | Offers review approaches, recommends one, then runs the selected skill. |
 | `skill-guide` | Productivity | Recommends a skill or workflow and waits for the user's decision. |
 | `grill-with-choice` | Productivity | Runs Matt's `grilling` workflow with selectable answers in each round; requires that skill in the host. |
-| `todo-init` | Productivity | Bootstraps the `todo/` task system: folders, inbox headers, AGENTS.md rules, `.gitignore`, dashboard specs. |
-| `todo-triage` | Productivity | Sorts raw `todo/inbox.md` notes into task files by decision tree; keeps inbox headers intact. |
-| `todo-next` | Productivity | Summarizes open tasks, recommends next work, and follows the Skills ticks in the task file. |
-| `todo-audit` | Productivity | Reports task files missing related paths or done dates — the two things the board can't show. |
+| `todo-init` | Productivity | Bootstraps the `todo/` system, including Preop/Mise board views and workflow rules. |
+| `todo-triage` | Productivity | Sorts inbox notes into `stage: todo` files; keeps inbox headers intact. |
+| `todo-next` | Productivity | Recommends `mise`/`wip` tasks, lists `test` as waiting, and skips `todo`/`preop` content. |
+| `todo-audit` | Productivity | Reports missing related paths outside `todo`/`preop`, plus missing done dates. |
 | `todo-sweep` | Productivity | Moves `status: done` files into `todo/archive/YYYY-MM/` and proposes a commit. |
-| `todo-parallel` | Productivity | Runs 2–3 unrelated tasks as background subagents, then commits each task separately. |
-| `todo-finish` | Productivity | Closes or reverts `stage: test` tasks in one command — `status: done` + done date, or back to `wip` when rejected. |
+| `todo-parallel` | Productivity | Runs 2–3 unrelated `mise`/`wip` tasks as background subagents, then commits each task separately. |
+| `todo-finish` | Productivity | Closes `test` tasks or returns failures to `wip` with the reason recorded in Progress. |
 
 Workflow diagrams for the todo system (lifecycle + worked scenario): [skills/references/todo-diagrams.md](skills/references/todo-diagrams.md) — raw `.mmd` sources in `assets/`.
 

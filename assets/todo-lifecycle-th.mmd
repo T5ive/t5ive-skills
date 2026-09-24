@@ -1,8 +1,12 @@
 stateDiagram-v2
     [*] --> todo: triage สร้างไฟล์
-    todo --> wip: เริ่มงาน — todo-next/AI
+    todo --> preop: dev รอข้อมูลหรือผลทดสอบ
+    preop --> todo: dev ได้ข้อมูล แต่ยังต้องเตรียมต่อ
+    preop --> mise: dev ได้ข้อมูลและเตรียมพร้อม
+    todo --> mise: dev เติมรายละเอียดครบ
+    mise --> wip: เริ่มงาน — todo-next/AI
     wip --> test: งานเสร็จ จบ session — AI
-    test --> wip: ไม่ผ่าน (dev test หรือ Tester) — บอร์ด / finish --revert
+    test --> wip: ไม่ผ่าน — จดเหตุผลใน Progress
     test --> done: Tester ผ่าน — todo-finish หรือบอร์ด
     todo --> done: ไม่มี ticket ผู้ใช้ประกาศจบ
     done --> [*]: sweep เก็บ archive/YYYY-MM

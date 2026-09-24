@@ -23,9 +23,9 @@ RULES = """## Todo workflow
 
 Task files live in `todo/` — 1 file = 1 feature/bug/refactor, kebab-case English filename, short title (Thai or English) in the `name` property (no `#` heading needed).
 
-1. Jira is the only source of truth for acceptance. Files use `status: open|done` and `stage: todo|wip|test` (dev-side workflow) — never mirror Jira's InProgress/Test into the file.
+1. Jira is the only source of truth for acceptance. Files use `status: open|done` and `stage: todo|preop|mise|wip|test` (dev-side workflow) — never mirror Jira's InProgress/Test into the file.
 2. Set `status: done` + `done: YYYY-MM-DD` when Jira reaches Done, or when the user declares a ticket-less task finished.
-3. Set `stage: wip` when work starts, `stage: test` when a session ends with the work complete, back to `wip` for fixing rejected work.
+3. Triage creates `stage: todo`. The dev sets `preop` while waiting for short-term information or test results, then `mise` when details are ready. AI leaves `todo` and `preop` alone, sets `wip` when work starts and `test` when work is complete. A failed dev test or Tester rejection returns to `wip` with the reason in `## Progress`.
 4. Never delete or move task files. Archiving happens only via the sweep command.
 5. Read the task file before starting work on it.
 6. When starting work, fill `## Related files` if the user left it empty or incomplete; skip if `## Progress` already records the files.
@@ -101,6 +101,8 @@ def board_yaml(with_phase: bool) -> str:
         "    columnSize:\n"
         "      note.type: 94\n"
         "      file.name: 120\n"
+        + stage_view("Preop", "preop")
+        + stage_view("Mise", "mise")
         + stage_view("WIP", "wip")
         + stage_view("Testing", "test")
     )

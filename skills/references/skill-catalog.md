@@ -9,13 +9,13 @@ Use this reference to distinguish nearby workflows. Check the current host's ski
 - `review-with-choice`: show review options, recommend one, and start the user's selection.
 - `git-commit`: create a Conventional Commit message in Thai.
 - `grill-with-choice` runs Matt's `grilling` skill with host-native selectable answers in each round; it requires that skill in the current host.
-- `todo-init`: bootstrap a project's `todo/` task system (folders, inbox headers, AGENTS.md rules, `.gitignore`).
-- `todo-triage`: sort raw `todo/inbox.md` notes into task files; keeps inbox headers.
-- `todo-next`: summarize open tasks, recommend the next one, and follow the task file's Skills ticks.
-- `todo-audit`: report task files missing metadata the board can't show (related paths, done date).
+- `todo-init`: bootstrap a project's `todo/` task system, including Preop/Mise board views and workflow rules.
+- `todo-triage`: sort raw `todo/inbox.md` notes into `stage: todo` files; keeps inbox headers.
+- `todo-next`: recommend `mise`/`wip` work, list `test` as waiting, and leave `todo`/`preop` content to the dev.
+- `todo-audit`: report missing related paths outside `todo`/`preop` and missing done dates.
 - `todo-sweep`: archive `status: done` task files into `todo/archive/YYYY-MM/`.
-- `todo-parallel`: run unrelated todo tasks as parallel subagents with separate commits.
-- `todo-finish`: close or revert `stage: test` tasks in one command — `status: done` + done date, or back to `wip` when rejected.
+- `todo-parallel`: run unrelated `mise`/`wip` tasks as parallel subagents with separate commits.
+- `todo-finish`: close or revert `stage: test` tasks — `status: done` + done date, or back to `wip` with the rejection reason in Progress.
 
 ## Matt Pocock v1.2.3
 

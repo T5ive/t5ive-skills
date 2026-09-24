@@ -11,13 +11,13 @@ Plugin สำหรับ Codex และ Claude Code รวมสกิลช�
 | `review-with-choice` | Engineering | แสดงตัวเลือกวิธีรีวิว แนะนำวิธีที่เหมาะ แล้วเริ่มวิธีที่ผู้ใช้เลือก |
 | `skill-guide` | Productivity | แนะนำสกิลหรือลำดับใช้ แล้วรอผู้ใช้ตัดสินใจ |
 | `grill-with-choice` | Productivity | ใช้ workflow `grilling` ของ Matt โดยถามแต่ละรอบเป็นตัวเลือกที่กดได้ (ต้องมีสกิลนี้ใน host) |
-| `todo-init` | Productivity | ติดตั้งระบบ `todo/`: โครงโฟลเดอร์, header inbox, กฎใน AGENTS.md, `.gitignore` และ spec dashboard |
-| `todo-triage` | Productivity | แยกโน้ตดิบใน `todo/inbox.md` เป็นไฟล์งานตามต้นไม้ตัดสินใจ (คง header inbox ไว้) |
-| `todo-next` | Productivity | สรุปงาน open ทั้งหมด เสนองานถัดไป และทำตาม Skills ticks ในไฟล์งาน |
-| `todo-audit` | Productivity | รายงานไฟล์งานที่ขาดไฟล์ที่เกี่ยวข้อง / วันที่ done — สองอย่างที่บอร์ดเห็นไม่ได้ |
+| `todo-init` | Productivity | ติดตั้งระบบ `todo/` พร้อมบอร์ด Preop/Mise และกฎใน AGENTS.md |
+| `todo-triage` | Productivity | แยกโน้ตใน `todo/inbox.md` เป็นไฟล์ `stage: todo` และคง header inbox |
+| `todo-next` | Productivity | เสนอเฉพาะงาน `mise`/`wip`, แสดง `test` ที่รอผล และข้ามเนื้อหา `todo`/`preop` |
+| `todo-audit` | Productivity | รายงาน Related files ที่ขาดนอก `todo`/`preop` และวันที่ done ที่ขาด |
 | `todo-sweep` | Productivity | ย้ายไฟล์ `status: done` ลง `todo/archive/YYYY-MM/` พร้อมเสนอ commit |
-| `todo-parallel` | Productivity | รัน 2-3 งานที่ไม่เกี่ยวกันเป็น subagents พื้นหลัง แล้ว commit แยกทีละงาน |
-| `todo-finish` | Productivity | ปิดหรือคืนงาน `stage: test` คำสั่งเดียว — `status: done` + วันที่ done หรือกลับไป `wip` เมื่อไม่ผ่าน |
+| `todo-parallel` | Productivity | รัน 2-3 งาน `mise`/`wip` ที่ไม่เกี่ยวกันเป็น subagents แล้ว commit แยกทีละงาน |
+| `todo-finish` | Productivity | ปิดงาน `test` หรือคืนงานไม่ผ่านไป `wip` พร้อมบันทึกเหตุผลใน Progress |
 
 ไดอะแกรม workflow ของระบบ todo (วงจรงาน + scenario ตัวอย่างจริง): [skills/references/todo-diagrams.md](skills/references/todo-diagrams.md) — ต้นฉบับ `.mmd` อยู่ใน `assets/`
 

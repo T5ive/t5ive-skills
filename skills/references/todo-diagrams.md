@@ -9,9 +9,13 @@
 ```mermaid
 stateDiagram-v2
     [*] --> todo: triage สร้างไฟล์
-    todo --> wip: เริ่มงาน — todo-next/AI
+    todo --> preop: dev รอข้อมูลหรือผลทดสอบ
+    preop --> todo: dev ได้ข้อมูล แต่ยังต้องเตรียมต่อ
+    preop --> mise: dev ได้ข้อมูลและเตรียมพร้อม
+    todo --> mise: dev เติมรายละเอียดครบ
+    mise --> wip: เริ่มงาน — todo-next/AI
     wip --> test: งานเสร็จ จบ session — AI
-    test --> wip: ไม่ผ่าน (dev test หรือ Tester) — บอร์ด / finish --revert
+    test --> wip: ไม่ผ่าน — จดเหตุผลใน Progress
     test --> done: Tester ผ่าน — todo-finish หรือบอร์ด
     todo --> done: ไม่มี ticket ผู้ใช้ประกาศจบ
     done --> [*]: sweep เก็บ archive/YYYY-MM
@@ -25,7 +29,9 @@ stateDiagram-v2
 
 | State | ความหมาย | ดูที่ไหน |
 |---|---|---|
-| `stage: todo` | ยังไม่เริ่ม — ไฟล์ถูกสร้างโดย todo-triage แล้วรอถูกเลือก | view **All** |
+| `stage: todo` | ไฟล์ที่ todo-triage สร้าง รอ dev เติมรายละเอียด; AI ไม่อ่านเนื้อหา | view **All** |
+| `stage: preop` | dev รอข้อมูลหรือผลทดสอบระยะสั้น; AI ไม่อ่านเนื้อหา | view **Preop** |
+| `stage: mise` | dev เตรียมรายละเอียดครบ พร้อมให้ AI เริ่มงาน | view **Mise** |
 | `stage: wip` | เริ่มแล้วยังไม่จบ — รวมงานที่ถูกคืนกลับมาแก้ (Tester/dev-test ไม่ผ่าน) | view **WIP** |
 | `stage: test` | งานเสร็จ รอผล dev test → Jira → Tester | view **Testing** |
 | `status: done` | ปิดแล้ว — หายจากบอร์ดทันที (filter `status != "done"`) รอ sweep เก็บ | ไม่แสดงบนบอร์ด |
@@ -34,9 +40,11 @@ stateDiagram-v2
 
 | เปลี่ยน | ทริกเกอร์ | ผู้ทำ | เครื่องมือ |
 |---|---|---|---|
-| todo → wip | เริ่มทำงาน | AI | todo-next step 6 / dev ระบุไฟล์เอง |
+| todo → preop / mise | รอข้อมูล / เตรียมพร้อม | dev | แก้ stage ในไฟล์หรือบอร์ด |
+| preop → todo / mise | ได้ข้อมูลแล้ว แต่ยังต้องเตรียม / พร้อมเริ่ม | dev | แก้ stage ในไฟล์หรือบอร์ด |
+| mise → wip | เริ่มทำงาน | AI | todo-next step 6 / dev ระบุไฟล์เอง |
 | wip → test | จบ session ที่งานเสร็จ | AI | ใน session / todo-parallel step 5 |
-| test → wip | dev test หรือ Tester ไม่ผ่าน | dev หรือ script | แก้ cell ใน view Testing หรือ `finish.py --revert` |
+| test → wip | dev test หรือ Tester ไม่ผ่าน | dev หรือ AI | แก้ cell ใน view Testing หรือ `finish.py --revert` พร้อมจดเหตุผลใน `## Progress` |
 | test → done | Tester ผ่าน (หรืองานไม่มี ticket และผู้ใช้ประกาศจบ) | dev หรือ script | `todo-finish` หรือแก้ cell ใน view Testing |
 | done → archive | เก็บกวาด | AI ตามคำสั่ง | todo-sweep — `git mv` ไป `todo/archive/YYYY-MM/` |
 
@@ -63,9 +71,14 @@ sequenceDiagram
     Dev->>AI: (1) todo-init — ครั้งเดียวต่อโปรเจกต์ใหม่
     Dev->>AI: (2-3) รับ req ลูกค้า ลง inbox.md → todo-triage
     AI->>F: สร้างไฟล์งาน stage: todo
-    Dev->>F: (4) เติมรายละเอียด — Related files / Skills ticks
+    alt (4) ข้อมูลพร้อม
+        Dev->>F: เติมรายละเอียด — Related files / Skills ticks → stage: mise
+    else (4.1) รอข้อมูลหรือผลทดสอบระยะสั้น
+        Dev->>F: stage: preop — AI ยังไม่อ่านเนื้อหา
+        Dev->>F: ได้ข้อมูลแล้ว เติมรายละเอียด → stage: mise
+    end
     Dev->>AI: (5) todo-next หรือระบุไฟล์เอง
-    AI->>F: (6) stage: wip — เริ่มทำงาน
+    AI->>F: (6) stage: mise → wip — เริ่มทำงาน
     opt (5.1) งานไม่เกี่ยวกัน 2-3 งาน
         Dev->>AI: todo-parallel — แยกเป็น subagents
     end
@@ -73,7 +86,8 @@ sequenceDiagram
     Dev->>F: (7) dev test
     loop (7.2) ไม่ผ่าน — แจ้ง AI ใน session นั้น แก้จนกว่าจะผ่าน
         Dev->>AI: ยังไม่ผ่าน — เพราะ ...
-        AI->>F: แก้ต่อ → append Progress + stage: test
+        AI->>F: stage: wip + append Progress เหตุผลไม่ผ่าน
+        AI->>F: แก้เสร็จ → stage: test
         Dev->>F: dev test ใหม่
     end
     Dev->>J: (7.1) ผ่าน: In progress → Test — manual บน Jira, AI ช่วยไม่ได้
@@ -97,10 +111,10 @@ sequenceDiagram
 
 ### อ่าน scenario ทีละช่วง
 
-- **(1) ติดตั้ง:** todo-init ครั้งเดียวต่อโปรเจกต์ — สร้าง `todo/`, บอร์ด 3 views และกฎใน AGENTS.md
-- **(2–4) รับและเตรียมงาน:** req ลง `inbox.md` → todo-triage สร้างไฟล์ `stage: todo` → dev เติม Related files / Skills ticks เอง
-- **(5–6) เลือกและลงมือ:** todo-next หรือระบุไฟล์เอง → `stage: wip` — งานไม่เกี่ยวกัน 2–3 งานใช้ todo-parallel (5.1) ได้ → จบ session ที่งานเสร็จ AI append `## Progress` + `stage: test`
-- **(7) dev test:** ไม่ผ่าน (7.2) วน loop เดิม — แจ้ง AI ใน session นั้นแล้วแก้จนผ่าน; ผ่านแล้ว (7.1) dev ย้าย Jira เป็น Test **manual บน Jira — AI ช่วยไม่ได้**
+- **(1) ติดตั้ง:** todo-init ครั้งเดียวต่อโปรเจกต์ — สร้าง `todo/`, บอร์ด 5 views และกฎใน AGENTS.md
+- **(2–4) รับและเตรียมงาน:** req ลง `inbox.md` → todo-triage สร้างไฟล์ `stage: todo` → dev เติม Related files / Skills ticks แล้วตั้ง `mise`; ถ้ารอข้อมูลระยะสั้น dev ตั้ง `preop` ก่อน AI ไม่อ่านเนื้อหาของ `todo`/`preop`
+- **(5–6) เลือกและลงมือ:** todo-next เสนอเฉพาะ `mise`/`wip` หรือระบุไฟล์ที่พร้อมเอง → `mise → wip` — งานไม่เกี่ยวกัน 2–3 งานใช้ todo-parallel (5.1) ได้ → จบ session ที่งานเสร็จ AI append `## Progress` + `stage: test`
+- **(7) dev test:** ไม่ผ่าน (7.2) → `stage: wip` พร้อมจดเหตุผลใน Progress แล้วแก้จนกลับ `test`; ผ่านแล้ว (7.1) dev ย้าย Jira เป็น Test **manual บน Jira — AI ช่วยไม่ได้**
 - **(8.1) Tester ไม่ผ่าน:** dev แก้ stage เป็น wip ในบอร์ด (หรือ `finish.py --revert`) + **แนบเหตุผลลง `## Progress` เสมอ** — งานขึ้น view WIP แล้ว todo-next จัดอันดับให้ทำต่อ (วนกลับไปขั้นแก้งาน)
 - **(8.2 / 8.3) Tester ผ่าน — เลือกทางหนึ่ง:** ปิดมือในบอร์ด (8.2: ใส่ done date **ก่อน** status: done เพราะ row หายทันที) หรือเรียก todo-finish (8.3: `status: done` + done วันนี้ในคำสั่งเดียว)
 - **(ปิดท้าย) เก็บกวาด:** todo-sweep ย้ายไฟล์ไป `todo/archive/YYYY-MM/` ตามเดือนของวันที่ done

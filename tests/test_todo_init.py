@@ -67,7 +67,7 @@ class TodoInitTests(unittest.TestCase):
             self.assertIn("## Phase 2", inbox)
             self.assertIn("## Phase 3", inbox)
 
-    def test_board_has_all_wip_testing_views(self):
+    def test_board_has_all_preop_mise_wip_testing_views(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             result = subprocess.run(
@@ -81,12 +81,18 @@ class TodoInitTests(unittest.TestCase):
             board = (root / "todo/_board.base").read_text(encoding="utf-8")
             self.assertIn('status != "done"', board)
             self.assertIn("name: All", board)
+            self.assertIn("name: Preop", board)
+            self.assertIn('stage == "preop"', board)
+            self.assertIn("name: Mise", board)
+            self.assertIn('stage == "mise"', board)
             self.assertIn("name: WIP", board)
             self.assertIn('stage == "wip"', board)
             self.assertIn("name: Testing", board)
             self.assertIn('stage == "test"', board)
             self.assertIn("- status", board)
             self.assertIn("- done", board)
+            rules = (root / "AGENTS.md").read_text(encoding="utf-8")
+            self.assertIn("stage: todo|preop|mise|wip|test", rules)
 
 
 if __name__ == "__main__":

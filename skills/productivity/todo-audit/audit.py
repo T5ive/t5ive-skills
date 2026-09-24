@@ -5,8 +5,8 @@ Usage:
     python audit.py [todo-dir] [--checks paths,done-date|all]
 
 Checks:
-    paths     ## Related files section is empty (not visible on the board —
-              Bases reads frontmatter only)
+    paths     ## Related files section is empty outside todo/preop (not
+              visible on the board — Bases reads frontmatter only)
     done-date status done and no done date (done files are filtered off the
               board; sweep needs the date to pick the archive folder)
 
@@ -51,7 +51,7 @@ def main():
     ap = argparse.ArgumentParser(description="Report todo task files missing metadata.")
     ap.add_argument("todo_dir", nargs="?", default="todo")
     ap.add_argument("--checks", default="all",
-                    help="comma list of paths,jira,phase,done-date or all (default)")
+                    help="comma list of paths,done-date or all (default)")
     args = ap.parse_args()
 
     try:
@@ -96,7 +96,7 @@ def main():
     counts = {}
     for p, text, fm in task_files:
         missing = []
-        if on("paths") and not section_body(text, "Related files"):
+        if on("paths") and fm.get("stage") not in {"todo", "preop"} and not section_body(text, "Related files"):
             missing.append("paths")
         if on("done-date") and fm.get("status") == "done" and not fm.get("done"):
             missing.append("done-date")

@@ -11,14 +11,14 @@ Use the user's target project; if none is named, use the current workspace. Reso
 
 ## Workflow
 
-1. Collect the chosen task files (from todo-next selection or explicit names).
+1. Collect the chosen task files (from todo-next selection or explicit names). Check frontmatter first: only `status: open` files at `stage: mise` or `wip` may run. Leave `todo` and `preop` to the dev without reading their bodies.
 2. Overlap check: read each file's `## Related files` and expected code areas. A task with an empty related-files section → ask the dev to fill it (or confirm the target files) and wait before spawning. If two tasks touch the same files, warn and run them sequentially instead.
-3. Spawn one background subagent per task. Each agent gets:
+3. Set selected `mise` tasks to `stage: wip`, then spawn one background subagent per task. Each agent gets:
    - its task file path — read first: `## Raw`, `## Tasks`, `## Skills` ticks
    - the files it may touch
    - HARD RULE: implement only — no commits, no `git add`, no branch/stash; leave changes in the working tree
 4. Wait for all agents. Review each task's diff (`git diff -- <paths>`).
-5. Append one Progress line per task file (`- YYYY-MM-DD: <what happened>`) and set `stage: test` — work complete, awaiting Jira.
+5. Append one Progress line per task file (`- YYYY-MM-DD: <what happened>`) and set successful work to `stage: test`. Failed work stays `wip` with its failure recorded in Progress.
 6. Commit separately, one commit per task: `git add <paths of that task>` (include its task file), then commit following the git-commit skill format.
 7. Large independent tasks → suggest git worktrees instead (one branch per task, merged later).
 

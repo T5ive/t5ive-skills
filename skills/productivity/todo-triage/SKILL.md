@@ -21,7 +21,7 @@ Use the user's target project; if none is named, use the current workspace. Reso
    - everything else → new file in `features/` or the matching `phase-X/`
 4. An item under an inbox header `## Phase N` gets `phase: N`. Under `## General` or before any header → no phase.
 5. Batch ALL ambiguous classifications into ONE question round. Use native choice UI when available; if unavailable or the call fails, show numbered choices in chat. Wait for the user's answer before writing anything; an accepted/pending UI request or silence is not a selection.
-6. Create files with the template below. Filename kebab-case English; `name:` = short title (Thai or English); `created:` = today's date.
+6. Create every task file with `stage: todo` using the template below. The dev later sets `preop` while waiting for short-term information or `mise` when ready. Filename kebab-case English; `name:` = short title (Thai or English); `created:` = today's date.
 7. Never search the repo and never pre-fill `## Related files` — the dev fills it; it may be supplemented only when work starts.
 8. Edit `inbox.md`: remove processed items, keep every header (even now-empty ones) so future notes land in the right section.
 9. Report a summary table: item → destination.
@@ -31,7 +31,7 @@ Use the user's target project; if none is named, use the current workspace. Reso
 ```markdown
 ---
 status: open
-stage: todo          # todo | wip | test — dev-side workflow, AI updates it as work happens
+stage: todo          # todo | preop | mise | wip | test
 type: feature        # feature | bug | refactor
 created: 2026-09-23  # date the file was created — set once at creation, never change
 name: <short task title>

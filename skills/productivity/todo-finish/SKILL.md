@@ -17,7 +17,7 @@ Use the user's target project; if none is named, use the current workspace. Reso
    python "<skill-dir>/finish.py" "<project-root>/todo"
    ```
 
-2. Show the list and wait for the user's pick. Do nothing unasked.
+2. If the user already named the task, use it. Otherwise show the list and wait for the user's pick. Do nothing unasked.
 3. Close (`status: done` + `done:` date, today by default) or revert (`stage: wip`, rejected work):
 
    ```bash
@@ -26,7 +26,7 @@ Use the user's target project; if none is named, use the current workspace. Reso
    python "<skill-dir>/finish.py" "<project-root>/todo" --revert features/foo.md
    ```
 
-4. On revert, remind the dev to append the rejection reason to the task file's `## Progress` (`- YYYY-MM-DD: Tester ไม่ผ่าน — เพราะ ...`) — todo-next ranks the rework from that line, and chat context does not survive the session.
+4. On revert, append the supplied rejection reason to the task file's `## Progress` (`- YYYY-MM-DD: Tester ไม่ผ่าน — เพราะ ...`) in the same turn. If no reason was supplied, ask the dev for it before reverting; todo-next reads the reason from the file, not chat history.
 5. After closing, suggest todo-sweep when the user wants the done files archived.
 
 ## Safety
