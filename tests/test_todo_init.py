@@ -1,3 +1,4 @@
+import re
 import subprocess
 import sys
 import tempfile
@@ -15,6 +16,18 @@ def run_init(root, *args):
         text=True,
         encoding="utf-8",
     )
+
+
+def view_layout(board, name):
+    match = re.search(
+        rf"  - type: table\n    name: {re.escape(name)}\n(.*?)(?=\n  - type: table|\Z)",
+        board,
+        re.S,
+    )
+    if not match:
+        raise AssertionError(f"missing board view: {name}")
+    body = match.group(1)
+    return body[body.index("    order:\n"):].rstrip()
 
 
 class TodoInitTests(unittest.TestCase):
@@ -92,13 +105,44 @@ class TodoInitTests(unittest.TestCase):
             self.assertIn('stage == "wip"', board)
             self.assertIn("name: Testing", board)
             self.assertIn('stage == "test"', board)
+            all_layout = view_layout(board, "All")
+            for name in ("Todo", "Preop", "Mise", "WIP"):
+                with self.subTest(view=name):
+                    self.assertEqual(view_layout(board, name), all_layout)
+            self.assertEqual(
+                view_layout(board, "Testing"),
+                all_layout.replace(
+                    "      - stage\n", "      - stage\n      - status\n      - done\n", 1
+                ),
+            )
             ignored = (root / ".gitignore").read_text(encoding="utf-8").splitlines()
             self.assertIn("/todo/.obsidian/", ignored)
-            self.assertIn("/todo/_board.base", ignored)
-            self.assertIn("- status", board)
-            self.assertIn("- done", board)
             rules = (root / "AGENTS.md").read_text(encoding="utf-8")
             self.assertIn("stage: todo|preop|mise|wip|test", rules)
+
+    def test_stage_views_keep_phase_column(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            result = subprocess.run(
+                [sys.executable, str(SCRIPT), str(root), "--phases", "2"],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            board = (root / "todo/_board.base").read_text(encoding="utf-8")
+            all_layout = view_layout(board, "All")
+            self.assertIn("      - phase\n", all_layout)
+            for name in ("Todo", "Preop", "Mise", "WIP"):
+                with self.subTest(view=name):
+                    self.assertEqual(view_layout(board, name), all_layout)
+            self.assertEqual(
+                view_layout(board, "Testing"),
+                all_layout.replace(
+                    "      - stage\n", "      - stage\n      - status\n      - done\n", 1
+                ),
+            )
 
     def test_existing_board_is_left_untouched(self):
         with tempfile.TemporaryDirectory() as tmp:

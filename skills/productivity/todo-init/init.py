@@ -9,7 +9,7 @@ inbox.md with default headers (General, Misc, Phase N), backlog.md, misc.md,
 _board.base (starter Obsidian Bases config) and jira.md (live JQL list via
 the community Jira Issue plugin); appends the Todo workflow rules to AGENTS.md
 (created if missing, skipped if the section exists); ensures /todo/.obsidian/
-and /todo/_board.base are gitignored. --from seeds inbox.md with an existing notes file verbatim
+is gitignored. --from seeds inbox.md with an existing notes file verbatim
 (its ## headers are preserved; header-less content lands under ## General).
 Reports created vs skipped for every piece.
 """
@@ -48,33 +48,47 @@ MISC = """# Misc
 Misc / questions / remarks
 """
 
-def stage_view(name: str, stage: str) -> str:
-    """One table view pinned to a single stage. Columns stage/status/done are on
-    purpose — Obsidian Bases tables edit them inline, so rejected work goes back
-    to wip and finished work gets its done date without opening the file."""
+def view_layout(with_phase: bool, testing: bool = False) -> str:
+    """Shared columns, sort, and widths for every board view."""
+    phase_col = "      - phase\n" if with_phase else ""
+    testing_cols = "      - status\n      - done\n" if testing else ""
+    return (
+        "    order:\n"
+        "      - name\n"
+        "      - stage\n"
+        + testing_cols
+        + "      - type\n"
+        + phase_col
+        + "      - created\n"
+        + "      - jira\n"
+        + "      - file.name\n"
+        + "    sort:\n"
+        + "      - property: created\n"
+        + "        direction: ASC\n"
+        + "      - property: type\n"
+        + "        direction: ASC\n"
+        + "      - property: name\n"
+        + "        direction: ASC\n"
+        + "    columnSize:\n"
+        + "      note.type: 94\n"
+        + "      file.name: 120\n"
+    )
+
+
+def stage_view(name: str, stage: str, with_phase: bool) -> str:
+    """One table view pinned to a single stage."""
     return (
         "  - type: table\n"
         f"    name: {name}\n"
         "    filters:\n"
         "      and:\n"
         f'        - stage == "{stage}"\n'
-        "    order:\n"
-        "      - name\n"
-        "      - stage\n"
-        "      - status\n"
-        "      - done\n"
-        "      - jira\n"
-        "      - created\n"
-        "      - file.name\n"
-        "    sort:\n"
-        "      - property: created\n"
-        "        direction: ASC\n"
+        + view_layout(with_phase, testing=stage == "test")
     )
 
 
 def board_yaml(with_phase: bool) -> str:
     """Build the _board.base content. No placeholders — the returned string is final."""
-    phase_col = "      - phase\n" if with_phase else ""
     return (
         "filters:\n"
         "  and:\n"
@@ -83,29 +97,12 @@ def board_yaml(with_phase: bool) -> str:
         "views:\n"
         "  - type: table\n"
         "    name: All\n"
-        "    order:\n"
-        "      - name\n"
-        "      - stage\n"
-        "      - type\n"
-        + phase_col +
-        "      - created\n"
-        "      - jira\n"
-        "      - file.name\n"
-        "    sort:\n"
-        "      - property: created\n"
-        "        direction: ASC\n"
-        "      - property: type\n"
-        "        direction: ASC\n"
-        "      - property: name\n"
-        "        direction: ASC\n"
-        "    columnSize:\n"
-        "      note.type: 94\n"
-        "      file.name: 120\n"
-        + stage_view("Todo", "todo")
-        + stage_view("Preop", "preop")
-        + stage_view("Mise", "mise")
-        + stage_view("WIP", "wip")
-        + stage_view("Testing", "test")
+        + view_layout(with_phase)
+        + stage_view("Todo", "todo", with_phase)
+        + stage_view("Preop", "preop", with_phase)
+        + stage_view("Mise", "mise", with_phase)
+        + stage_view("WIP", "wip", with_phase)
+        + stage_view("Testing", "test", with_phase)
     )
 
 JIRA_MD = """# Jira — Open Work
@@ -286,17 +283,16 @@ def main():
 
     # --- .gitignore ----------------------------------------------------------
     gi = root / ".gitignore"
-    lines = ("/todo/.obsidian/", "/todo/_board.base")
+    line = "/todo/.obsidian/"
     current = gi.read_text(encoding="utf-8", errors="replace") if gi.exists() else ""
-    missing = [line for line in lines if line not in current.splitlines()]
-    if not missing:
-        note(False, ".gitignore already ignores /todo/.obsidian/ and /todo/_board.base")
+    if line in current.splitlines():
+        note(False, ".gitignore already ignores /todo/.obsidian/")
     else:
         with gi.open("a", encoding="utf-8") as fh:
             if current and not current.endswith("\n"):
                 fh.write("\n")
-            fh.write("\n".join(missing) + "\n")
-        note(True, ".gitignore updated: " + ", ".join(missing))
+            fh.write(line + "\n")
+        note(True, ".gitignore updated: /todo/.obsidian/")
 
     print(f"# todo-init — {root.resolve()}")
     print(f"layout: {'phase folders ' + ', '.join(phases) if phases else 'features/ (default)'}")

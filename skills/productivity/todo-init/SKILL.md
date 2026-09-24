@@ -32,16 +32,16 @@ All flags optional. Pass `--no-board` / `--no-jira` for anything declined in ste
 - `todo/inbox.md` with default headers: `## General`, `## Misc`, `## Phase N` (only the chosen phases)
 - `todo/backlog.md`, `todo/misc.md`
 - `todo/_board.base` — six tables (Obsidian Bases), all filtered to files that have `status` and `status != "done"`:
-  - **All** — every open task: columns name (title)/stage/type/phase*/created/jira + a narrow `file.name` for click-to-open (`phase` only in phase projects), sorted by `created` (oldest first) → `type` (ASC = bug < feature < refactor, so bugs float up) → `name` (a–z).
+  - **All** — every open task: columns name (title)/stage/type/phase*/created/jira + a narrow `file.name` for click-to-open (`phase` only in phase projects), sorted by `created` (oldest first) → `type` (ASC = bug < feature < refactor, so bugs float up) → `name` (a–z). All stage views share its columns, sort and widths; `phase` appears in every view for phase projects.
   - **Todo** — `stage == "todo"`: newly triaged work waiting for the dev to prepare; AI does not start these tasks.
   - **Preop** — `stage == "preop"`: short-term information or test results the dev is waiting for; AI does not start these tasks.
   - **Mise** — `stage == "mise"`: details prepared by the dev, ready for todo-next or todo-parallel.
   - **WIP** — `stage == "wip"`: work in flight, including Tester-rejected rework — pick it up again via todo-next.
-  - **Testing** — `stage == "test"`: complete, awaiting dev test, Jira, or Tester. Columns stage/status/done are editable inline in the table: revert stage to `wip` on rejection and record the reason in `## Progress`, or close by setting the `done` date **first** and `status: done` second (the row leaves the board the moment status flips) — or close in one command with todo-finish.
+  - **Testing** — `stage == "test"`: complete, awaiting dev test, Jira, or Tester. Adds editable `status` and `done` columns after `stage`: revert stage to `wip` on rejection and record the reason in `## Progress`, or close by setting the `done` date **first** and `status: done` second (the row leaves the board the moment status flips) — or close in one command with todo-finish.
   Filled-vs-empty is read straight from the values; related-files completeness cannot appear here — Bases reads frontmatter only, that check belongs to todo-audit.
 - `todo/jira.md` — live JQL via the community *Jira Issue* plugin: one block for all unresolved work of the current user, plus an optional compact per-project table block (`query:` / `columns:` / `limit:`) the user customizes
 - `## Todo workflow` rules in `AGENTS.md` (created if missing; skipped if the heading exists) — the rules text lives in init.py's `RULES` constant, single source of truth
-- `/todo/.obsidian/` and `/todo/_board.base` lines in `.gitignore` (local Obsidian settings and personal board layout)
+- `/todo/.obsidian/` line in `.gitignore`
 
 `--from` copies the legacy file **verbatim** — format-agnostic by design: its `##` headers are preserved, content before the first `##` header lands under `## General`. Decoding tries utf-8-sig (UTF-8 with or without BOM) → cp874 → latin-1. A legacy file named TODO/todo that blocks the `todo/` folder is renamed to `todo.imported` after seeding.
 
@@ -53,7 +53,7 @@ All flags optional. Pass `--no-board` / `--no-jira` for anything declined in ste
 
 ### 4. No python on the machine → manual fallback
 
-Create the same pieces by hand — the exact contents live as constants in init.py (`INBOX_INTRO`, `BACKLOG`, `MISC`, `JIRA_MD`, `RULES`); copy them from there, never from memory. For `_board.base` there is **no constant** — build the YAML from the description in step 2 (six tables: the shared `status != "done"` filter, per-view `filters` pinning Todo/Preop/Mise/WIP/Testing to one stage, plus `order` + `sort` + `columnSize`). Never leave `{...}` placeholders in the file.
+Create the same pieces by hand — the exact contents live as constants in init.py (`INBOX_INTRO`, `BACKLOG`, `MISC`, `JIRA_MD`, `RULES`); copy them from there, never from memory. For `_board.base` there is **no constant** — build the YAML from the description in step 2 (six tables: the shared `status != "done"` filter, All's layout shared by the stage views, Testing's extra `status`/`done` columns, and per-view `filters`). Never leave `{...}` placeholders in the file.
 
 ### 5. Closing summary — after the script, tell the user
 
