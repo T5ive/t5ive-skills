@@ -1,6 +1,6 @@
 {
   "name": "t5ive-skills",
-  "version": "1.3.3",
+  "version": "1.3.4",
   "description": "T5ive skills for choosing workflows, reviewing changes, grilling through decisions, writing Thai commit messages, and managing a todo/ task system.",
   "author": {
     "name": "T5ive",
