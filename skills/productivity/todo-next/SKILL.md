@@ -7,6 +7,8 @@ description: "Use when the user says \"todo next\", \"หางานถัด�
 
 Summarize open work and help pick the next task.
 
+Use the user's target project; if none is named, use the current workspace. Scan that project's `todo/`, not a skill source or cache directory.
+
 ## Workflow
 
 1. Scan `todo/` (exclude `archive/`) for files with `status: open` in frontmatter. Read each file's frontmatter and its last `## Progress` line.

@@ -7,6 +7,8 @@ description: "Use when the user says \"triage\", \"todo triage\", \"แยกง
 
 Sort raw inbox notes into task files in one pass. No codebase search.
 
+Use the user's target project; if none is named, use the current workspace. Resolve `todo/` and `AGENTS.md` under that project root, not under this skill's directory.
+
 ## Workflow
 
 1. Read `## Todo workflow` in `AGENTS.md` for this project's layout (phase folders vs `features/`). No rules found → default layout: `features/`, `bugs/`, `misc.md`, `backlog.md`.
@@ -18,7 +20,7 @@ Sort raw inbox notes into task files in one pass. No codebase search.
    - customer change request on an existing feature → `type: feature`: find the original by searching open task files for the feature name (0 or >1 match → add to the ambiguity batch in step 5); append a checkbox + the raw note to the still-open original file (new file only if the original is done/archived)
    - everything else → new file in `features/` or the matching `phase-X/`
 4. An item under an inbox header `## Phase N` gets `phase: N`. Under `## General` or before any header → no phase.
-5. Batch ALL ambiguous classifications into ONE question round (choice UI if available) before writing anything.
+5. Batch ALL ambiguous classifications into ONE question round. Use native choice UI when available; if unavailable or the call fails, show numbered choices in chat. Wait for the user's answer before writing anything; an accepted/pending UI request or silence is not a selection.
 6. Create files with the template below. Filename kebab-case English; `name:` = short title (Thai or English); `created:` = today's date.
 7. Never search the repo and never pre-fill `## Related files` — the dev fills it; it may be supplemented only when work starts.
 8. Edit `inbox.md`: remove processed items, keep every header (even now-empty ones) so future notes land in the right section.

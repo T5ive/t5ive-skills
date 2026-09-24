@@ -7,10 +7,12 @@ description: "Use when the user says \"todo parallel\", \"ทำงานหล�
 
 Run 2–3 unrelated todo tasks concurrently with separate commits at the end.
 
+Use the user's target project; if none is named, use the current workspace. Resolve task files and code paths under that project root.
+
 ## Workflow
 
 1. Collect the chosen task files (from todo-next selection or explicit names).
-2. Overlap check: read each file's `## Related files` and expected code areas. A task with an empty related-files section → ask the dev to fill it (or confirm the target files) before spawning. If two tasks touch the same files, warn and run them sequentially instead.
+2. Overlap check: read each file's `## Related files` and expected code areas. A task with an empty related-files section → ask the dev to fill it (or confirm the target files) and wait before spawning. If two tasks touch the same files, warn and run them sequentially instead.
 3. Spawn one background subagent per task. Each agent gets:
    - its task file path — read first: `## Raw`, `## Tasks`, `## Skills` ticks
    - the files it may touch

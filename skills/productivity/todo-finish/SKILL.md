@@ -7,21 +7,23 @@ description: "Use when the user says \"ปิดงาน test\", \"จบงา
 
 Close or revert tasks sitting at `stage: test` — the batch counterpart to editing the board's Testing view by hand.
 
+Use the user's target project; if none is named, use the current workspace. Resolve its `todo/` separately from this skill's directory.
+
 ## Workflow
 
-1. Run the bundled script (relative to this skill's base directory) to list what's waiting:
+1. Resolve `finish.py` from the activated skill's directory and pass the target project's absolute `todo/` path to list what's waiting:
 
    ```bash
-   python finish.py <todo-dir>
+   python "<skill-dir>/finish.py" "<project-root>/todo"
    ```
 
 2. Show the list and wait for the user's pick. Do nothing unasked.
 3. Close (`status: done` + `done:` date, today by default) or revert (`stage: wip`, rejected work):
 
    ```bash
-   python finish.py <todo-dir> --done all
-   python finish.py <todo-dir> --done features/foo.md --date 2026-09-24
-   python finish.py <todo-dir> --revert features/foo.md
+   python "<skill-dir>/finish.py" "<project-root>/todo" --done all
+   python "<skill-dir>/finish.py" "<project-root>/todo" --done features/foo.md --date 2026-09-24
+   python "<skill-dir>/finish.py" "<project-root>/todo" --revert features/foo.md
    ```
 
 4. On revert, remind the dev to append the rejection reason to the task file's `## Progress` (`- YYYY-MM-DD: Tester ไม่ผ่าน — เพราะ ...`) — todo-next ranks the rework from that line, and chat context does not survive the session.

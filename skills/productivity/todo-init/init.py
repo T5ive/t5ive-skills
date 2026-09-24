@@ -40,12 +40,12 @@ INBOX_INTRO = """# Inbox
 
 BACKLOG = """# Backlog
 
-Wait / low priority — one section per topic; becomes a task file when its time comes (promote via todo-next or cut into inbox).
+Wait / low priority
 """
 
 MISC = """# Misc
 
-Misc / questions / remarks — one line per topic
+Misc / questions / remarks
 """
 
 def stage_view(name: str, stage: str) -> str:

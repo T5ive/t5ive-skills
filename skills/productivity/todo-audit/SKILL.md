@@ -7,6 +7,8 @@ description: "Use when the user says \"todo audit\", \"ไฟล์ไหนย�
 
 Report which task files are missing which data. Read-only — change nothing.
 
+Use the user's target project; if none is named, use the current workspace. Resolve `todo/` under that project root, not under this skill's directory.
+
 ## Checks
 
 Only what the board cannot show. jira/phase emptiness is visible on the board's columns — not audited.
@@ -18,7 +20,11 @@ Only what the board cannot show. jira/phase emptiness is visible on the board's 
 
 ## Workflow
 
-1. Determine the checks: from the command if specified (`paths`, `done-date`, combinable; `all` = everything). If unspecified, ask once with multi-select choices.
-2. Scan `todo/` (exclude `archive/`): read the frontmatter and the `## Related files` section of every task file. Do not scan the codebase.
+1. Determine the checks from the command if specified (`paths`, `done-date`, combinable; `all` = everything). If unspecified, ask once with multi-select choices: `paths`, `done-date`, or both. Use native choice UI when available; otherwise show numbered choices in chat. Wait for the answer before scanning; an accepted/pending UI request or silence is not a selection.
+2. Resolve `audit.py` from the activated skill's directory and run it against the target project's absolute `todo/` path. Pass the selected checks with `--checks`; use `all` for both. If Python is unavailable, do the same read-only scan manually. Exclude `archive/`; read each task file's frontmatter and `## Related files` section only. Do not scan the codebase.
 3. Report one table: file → missing items. End with counts per check.
 4. Suggest fixes (e.g. "ask for the missing ticket links", "fill paths before starting work") but edit nothing.
+
+```bash
+python "<skill-dir>/audit.py" "<project-root>/todo" --checks paths,done-date
+```

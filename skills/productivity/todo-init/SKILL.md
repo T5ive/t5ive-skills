@@ -5,21 +5,25 @@ description: "Use when the user says \"todo init\", \"set up todo\", \"สร้
 
 # Todo Init
 
-Bootstrap the `todo/` markdown task system in the current project. The deterministic parts run via the bundled `init.py` — idempotent, same output every time.
+Bootstrap the `todo/` markdown task system in the user's target project; if none is named, use the current workspace. Keep that project root separate from this skill's directory. The deterministic parts run via the bundled `init.py` — idempotent, same output every time.
 
 ## Workflow
 
-### 1. Ask once (choice UI if available)
+### 1. Ask once and wait
+
+Use the host's native choice UI when available. If it is unavailable or the call fails, show all questions together as numbered choices in one chat message. Wait for the user's answer before running init; an accepted/pending UI request or silence is not an answer, and defaults are not silently selected.
 
 - Does this project use phases? If yes, which numbers (e.g. `2,3,4`)? Default: no phases → `features/`.
 - Is there a legacy notes file to seed the inbox from (e.g. an old `TODO` file)? Ask for the path.
 - Create the Obsidian board (`_board.base`)? Default: yes.
 - Create `jira.md` (live JQL via the community Jira Issue plugin)? Default: yes if the user uses that plugin, otherwise no.
 
-### 2. Run the bundled script (relative to this skill's base directory)
+### 2. Run the bundled script
+
+Resolve `init.py` from the activated skill's directory. Pass the target project root explicitly. `--from` is resolved from the command's working directory, so pass an absolute path to the legacy file.
 
 ```bash
-python init.py <project-root> --phases "2,3,4" --from TODO
+python "<skill-dir>/init.py" "<project-root>" --phases "2,3,4" --from "<project-root>/TODO"
 ```
 
 All flags optional. Pass `--no-board` / `--no-jira` for anything declined in step 1. The script creates, idempotently:
