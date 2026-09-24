@@ -101,6 +101,7 @@ def board_yaml(with_phase: bool) -> str:
         "    columnSize:\n"
         "      note.type: 94\n"
         "      file.name: 120\n"
+        + stage_view("Todo", "todo")
         + stage_view("Preop", "preop")
         + stage_view("Mise", "mise")
         + stage_view("WIP", "wip")

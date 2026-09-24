@@ -9,7 +9,7 @@ Use this reference to distinguish nearby workflows. Check the current host's ski
 - `review-with-choice`: show review options, recommend one, and start the user's selection.
 - `git-commit`: create a Conventional Commit message in Thai.
 - `grill-with-choice` runs Matt's `grilling` skill with host-native selectable answers in each round; it requires that skill in the current host.
-- `todo-init`: bootstrap a project's `todo/` task system, including Preop/Mise board views and workflow rules.
+- `todo-init`: bootstrap a project's `todo/` task system, including All/Todo/Preop/Mise/WIP/Testing board views and workflow rules.
 - `todo-triage`: sort raw `todo/inbox.md` notes into `stage: todo` files; keeps inbox headers.
 - `todo-next`: recommend `mise`/`wip` work, list `test` as waiting, and leave `todo`/`preop` content to the dev.
 - `todo-audit`: report missing related paths outside `todo`/`preop` and missing done dates.

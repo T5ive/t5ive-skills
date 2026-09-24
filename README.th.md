@@ -11,7 +11,7 @@ Plugin สำหรับ Codex และ Claude Code รวมสกิลช�
 | `review-with-choice` | Engineering | แสดงตัวเลือกวิธีรีวิว แนะนำวิธีที่เหมาะ แล้วเริ่มวิธีที่ผู้ใช้เลือก |
 | `skill-guide` | Productivity | แนะนำสกิลหรือลำดับใช้ แล้วรอผู้ใช้ตัดสินใจ |
 | `grill-with-choice` | Productivity | ใช้ workflow `grilling` ของ Matt โดยถามแต่ละรอบเป็นตัวเลือกที่กดได้ (ต้องมีสกิลนี้ใน host) |
-| `todo-init` | Productivity | ติดตั้งระบบ `todo/` พร้อมบอร์ด Preop/Mise และกฎใน AGENTS.md |
+| `todo-init` | Productivity | ติดตั้งระบบ `todo/` พร้อมบอร์ด All/Todo/Preop/Mise/WIP/Testing และกฎใน AGENTS.md |
 | `todo-triage` | Productivity | แยกโน้ตใน `todo/inbox.md` เป็นไฟล์ `stage: todo` และคง header inbox |
 | `todo-next` | Productivity | เสนอเฉพาะงาน `mise`/`wip`, แสดง `test` ที่รอผล และข้ามเนื้อหา `todo`/`preop` |
 | `todo-audit` | Productivity | รายงาน Related files ที่ขาดนอก `todo`/`preop` และวันที่ done ที่ขาด |

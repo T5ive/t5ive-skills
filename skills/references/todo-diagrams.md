@@ -29,7 +29,7 @@ stateDiagram-v2
 
 | State | ความหมาย | ดูที่ไหน |
 |---|---|---|
-| `stage: todo` | ไฟล์ที่ todo-triage สร้าง รอ dev เติมรายละเอียด; AI ไม่อ่านเนื้อหา | view **All** |
+| `stage: todo` | ไฟล์ที่ todo-triage สร้าง รอ dev เติมรายละเอียด; AI ไม่อ่านเนื้อหา | views **All**, **Todo** |
 | `stage: preop` | dev รอข้อมูลหรือผลทดสอบระยะสั้น; AI ไม่อ่านเนื้อหา | view **Preop** |
 | `stage: mise` | dev เตรียมรายละเอียดครบ พร้อมให้ AI เริ่มงาน | view **Mise** |
 | `stage: wip` | เริ่มแล้วยังไม่จบ — รวมงานที่ถูกคืนกลับมาแก้ (Tester/dev-test ไม่ผ่าน) | view **WIP** |
@@ -111,7 +111,7 @@ sequenceDiagram
 
 ### อ่าน scenario ทีละช่วง
 
-- **(1) ติดตั้ง:** todo-init ครั้งเดียวต่อโปรเจกต์ — สร้าง `todo/`, บอร์ด 5 views และกฎใน AGENTS.md
+- **(1) ติดตั้ง:** todo-init ครั้งเดียวต่อโปรเจกต์ — สร้าง `todo/`, บอร์ด 6 views และกฎใน AGENTS.md
 - **(2–4) รับและเตรียมงาน:** req ลง `inbox.md` → todo-triage สร้างไฟล์ `stage: todo` → dev เติม Related files / Skills ticks แล้วตั้ง `mise`; ถ้ารอข้อมูลระยะสั้น dev ตั้ง `preop` ก่อน AI ไม่อ่านเนื้อหาของ `todo`/`preop`
 - **(5–6) เลือกและลงมือ:** todo-next เสนอเฉพาะ `mise`/`wip` หรือระบุไฟล์ที่พร้อมเอง → `mise → wip` — งานไม่เกี่ยวกัน 2–3 งานใช้ todo-parallel (5.1) ได้ → จบ session ที่งานเสร็จ AI append `## Progress` + `stage: test`
 - **(7) dev test:** ไม่ผ่าน (7.2) → `stage: wip` พร้อมจดเหตุผลใน Progress แล้วแก้จนกลับ `test`; ผ่านแล้ว (7.1) dev ย้าย Jira เป็น Test **manual บน Jira — AI ช่วยไม่ได้**

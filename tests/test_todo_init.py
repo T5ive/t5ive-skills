@@ -67,7 +67,7 @@ class TodoInitTests(unittest.TestCase):
             self.assertIn("## Phase 2", inbox)
             self.assertIn("## Phase 3", inbox)
 
-    def test_board_has_all_preop_mise_wip_testing_views(self):
+    def test_board_has_all_todo_preop_mise_wip_testing_views(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             result = subprocess.run(
@@ -80,7 +80,10 @@ class TodoInitTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stderr)
             board = (root / "todo/_board.base").read_text(encoding="utf-8")
             self.assertIn('status != "done"', board)
+            self.assertEqual(board.count("  - type: table"), 6)
             self.assertIn("name: All", board)
+            self.assertIn("name: Todo", board)
+            self.assertIn('stage == "todo"', board)
             self.assertIn("name: Preop", board)
             self.assertIn('stage == "preop"', board)
             self.assertIn("name: Mise", board)
@@ -93,6 +96,24 @@ class TodoInitTests(unittest.TestCase):
             self.assertIn("- done", board)
             rules = (root / "AGENTS.md").read_text(encoding="utf-8")
             self.assertIn("stage: todo|preop|mise|wip|test", rules)
+
+    def test_existing_board_is_left_untouched(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            todo = root / "todo"
+            todo.mkdir()
+            board = todo / "_board.base"
+            board.write_text("custom board\n", encoding="utf-8")
+
+            result = subprocess.run(
+                [sys.executable, str(SCRIPT), str(root)],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(board.read_text(encoding="utf-8"), "custom board\n")
 
 
 if __name__ == "__main__":

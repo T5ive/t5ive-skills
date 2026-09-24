@@ -31,8 +31,9 @@ All flags optional. Pass `--no-board` / `--no-jira` for anything declined in ste
 - `todo/` skeleton: `features/` or `phase-N/` folders (from `--phases`), `bugs/`, `archive/` (empty folders get a `.gitkeep`)
 - `todo/inbox.md` with default headers: `## General`, `## Misc`, `## Phase N` (only the chosen phases)
 - `todo/backlog.md`, `todo/misc.md`
-- `todo/_board.base` — five tables (Obsidian Bases), all filtered to files that have `status` and `status != "done"`:
+- `todo/_board.base` — six tables (Obsidian Bases), all filtered to files that have `status` and `status != "done"`:
   - **All** — every open task: columns name (title)/stage/type/phase*/created/jira + a narrow `file.name` for click-to-open (`phase` only in phase projects), sorted by `created` (oldest first) → `type` (ASC = bug < feature < refactor, so bugs float up) → `name` (a–z).
+  - **Todo** — `stage == "todo"`: newly triaged work waiting for the dev to prepare; AI does not start these tasks.
   - **Preop** — `stage == "preop"`: short-term information or test results the dev is waiting for; AI does not start these tasks.
   - **Mise** — `stage == "mise"`: details prepared by the dev, ready for todo-next or todo-parallel.
   - **WIP** — `stage == "wip"`: work in flight, including Tester-rejected rework — pick it up again via todo-next.
@@ -52,12 +53,12 @@ All flags optional. Pass `--no-board` / `--no-jira` for anything declined in ste
 
 ### 4. No python on the machine → manual fallback
 
-Create the same pieces by hand — the exact contents live as constants in init.py (`INBOX_INTRO`, `BACKLOG`, `MISC`, `JIRA_MD`, `RULES`); copy them from there, never from memory. For `_board.base` there is **no constant** — build the YAML from the description in step 2 (five tables: the shared `status != "done"` filter, per-view `filters` pinning Preop/Mise/WIP/Testing to one stage, plus `order` + `sort` + `columnSize`). Never leave `{...}` placeholders in the file.
+Create the same pieces by hand — the exact contents live as constants in init.py (`INBOX_INTRO`, `BACKLOG`, `MISC`, `JIRA_MD`, `RULES`); copy them from there, never from memory. For `_board.base` there is **no constant** — build the YAML from the description in step 2 (six tables: the shared `status != "done"` filter, per-view `filters` pinning Todo/Preop/Mise/WIP/Testing to one stage, plus `order` + `sort` + `columnSize`). Never leave `{...}` placeholders in the file.
 
 ### 5. Closing summary — after the script, tell the user
 
 - If the board was created: enable the **Bases core plugin** in Obsidian, open `todo/_board.base`, refine columns/sort in its editor. Built-in view types are `table` and `cards` only — never write `type: board` (unknown-view error).
-- For an existing project, `init.py` leaves `_board.base` and an existing `## Todo workflow` in `AGENTS.md` untouched. Update them by hand: add Preop/Mise views using the WIP view as a model, update the stage rules (1 and 3) from `RULES` in `init.py`, then classify existing `todo` files as `todo`, `preop`, or `mise`. Keep `backlog.md` as-is.
+- For an existing project, `init.py` leaves `_board.base` and an existing `## Todo workflow` in `AGENTS.md` untouched. Add the Todo view by hand using another stage view as a model and `stage == "todo"`; update any missing Preop/Mise views and stage rules (1 and 3) from `RULES` in `init.py`, then classify existing `todo` files as `todo`, `preop`, or `mise`. Keep `backlog.md` as-is.
 - If `jira.md` was created: it needs the community **Jira Issue** plugin + auth (Cloud and Server both supported) — and on Jira Cloud enable the **"Use 2025 search api"** toggle in the plugin's Account settings, otherwise `jira-search` blocks fail with `Missing API`. Scope the JQL with `project = KEY` or `sprint in openSprints()` — there is no `board` field in JQL.
 - Limitation: entries inside `misc.md`/`backlog.md` are list lines, not files — they never appear on the board; `todo-next` surfaces them instead.
 - `todo/` items only land in `misc.md` when they came from a `## Misc` inbox section or the dev said so — never by AI's own judgment.
