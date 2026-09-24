@@ -9,7 +9,7 @@ inbox.md with default headers (General, Misc, Phase N), backlog.md, misc.md,
 _board.base (starter Obsidian Bases config) and jira.md (live JQL list via
 the community Jira Issue plugin); appends the Todo workflow rules to AGENTS.md
 (created if missing, skipped if the section exists); ensures /todo/.obsidian/
-is gitignored. --from seeds inbox.md with an existing notes file verbatim
+and /todo/_board.base are gitignored. --from seeds inbox.md with an existing notes file verbatim
 (its ## headers are preserved; header-less content lands under ## General).
 Reports created vs skipped for every piece.
 """
@@ -286,16 +286,17 @@ def main():
 
     # --- .gitignore ----------------------------------------------------------
     gi = root / ".gitignore"
-    line = "/todo/.obsidian/"
+    lines = ("/todo/.obsidian/", "/todo/_board.base")
     current = gi.read_text(encoding="utf-8", errors="replace") if gi.exists() else ""
-    if line in current.splitlines():
-        note(False, ".gitignore already ignores /todo/.obsidian/")
+    missing = [line for line in lines if line not in current.splitlines()]
+    if not missing:
+        note(False, ".gitignore already ignores /todo/.obsidian/ and /todo/_board.base")
     else:
         with gi.open("a", encoding="utf-8") as fh:
             if current and not current.endswith("\n"):
                 fh.write("\n")
-            fh.write(line + "\n")
-        note(True, ".gitignore updated: /todo/.obsidian/")
+            fh.write("\n".join(missing) + "\n")
+        note(True, ".gitignore updated: " + ", ".join(missing))
 
     print(f"# todo-init — {root.resolve()}")
     print(f"layout: {'phase folders ' + ', '.join(phases) if phases else 'features/ (default)'}")

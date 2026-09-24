@@ -41,7 +41,7 @@ All flags optional. Pass `--no-board` / `--no-jira` for anything declined in ste
   Filled-vs-empty is read straight from the values; related-files completeness cannot appear here — Bases reads frontmatter only, that check belongs to todo-audit.
 - `todo/jira.md` — live JQL via the community *Jira Issue* plugin: one block for all unresolved work of the current user, plus an optional compact per-project table block (`query:` / `columns:` / `limit:`) the user customizes
 - `## Todo workflow` rules in `AGENTS.md` (created if missing; skipped if the heading exists) — the rules text lives in init.py's `RULES` constant, single source of truth
-- `/todo/.obsidian/` line in `.gitignore`
+- `/todo/.obsidian/` and `/todo/_board.base` lines in `.gitignore` (local Obsidian settings and personal board layout)
 
 `--from` copies the legacy file **verbatim** — format-agnostic by design: its `##` headers are preserved, content before the first `##` header lands under `## General`. Decoding tries utf-8-sig (UTF-8 with or without BOM) → cp874 → latin-1. A legacy file named TODO/todo that blocks the `todo/` folder is renamed to `todo.imported` after seeding.
 
