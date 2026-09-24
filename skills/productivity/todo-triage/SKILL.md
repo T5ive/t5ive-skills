@@ -34,7 +34,7 @@ type: feature        # feature | bug | refactor
 created: 2026-09-23  # date the file was created — set once at creation, never change
 name: <short task title>
 phase:               # phase-based projects only, from the inbox header
-jira:                # set when BA creates the ticket — JIRA:KEY-123
+jira:                # set once the Jira ticket exists — JIRA:KEY-123
 done:                # set (YYYY-MM-DD) only when Jira reaches Done
 ---
 

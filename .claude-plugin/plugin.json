@@ -21,6 +21,7 @@
     "./skills/productivity/todo-next",
     "./skills/productivity/todo-audit",
     "./skills/productivity/todo-sweep",
-    "./skills/productivity/todo-parallel"
+    "./skills/productivity/todo-parallel",
+    "./skills/productivity/todo-finish"
   ]
 }

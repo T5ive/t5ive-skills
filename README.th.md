@@ -17,6 +17,9 @@ Plugin สำหรับ Codex และ Claude Code รวมสกิลช�
 | `todo-audit` | Productivity | รายงานไฟล์งานที่ขาดไฟล์ที่เกี่ยวข้อง / วันที่ done — สองอย่างที่บอร์ดเห็นไม่ได้ |
 | `todo-sweep` | Productivity | ย้ายไฟล์ `status: done` ลง `todo/archive/YYYY-MM/` พร้อมเสนอ commit |
 | `todo-parallel` | Productivity | รัน 2-3 งานที่ไม่เกี่ยวกันเป็น subagents พื้นหลัง แล้ว commit แยกทีละงาน |
+| `todo-finish` | Productivity | ปิดหรือคืนงาน `stage: test` คำสั่งเดียว — `status: done` + วันที่ done หรือกลับไป `wip` เมื่อไม่ผ่าน |
+
+ไดอะแกรม workflow ของระบบ todo (วงจรงาน + scenario ตัวอย่างจริง): [skills/references/todo-diagrams.md](skills/references/todo-diagrams.md) — ต้นฉบับ `.mmd` อยู่ใน `assets/`
 
 ## สกิลที่ต้องใช้ร่วมกัน
 

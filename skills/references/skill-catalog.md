@@ -15,6 +15,7 @@ Use this reference to distinguish nearby workflows. Check the current host's ski
 - `todo-audit`: report task files missing metadata the board can't show (related paths, done date).
 - `todo-sweep`: archive `status: done` task files into `todo/archive/YYYY-MM/`.
 - `todo-parallel`: run unrelated todo tasks as parallel subagents with separate commits.
+- `todo-finish`: close or revert `stage: test` tasks in one command — `status: done` + done date, or back to `wip` when rejected.
 
 ## Matt Pocock v1.2.3
 

@@ -21,4 +21,4 @@ Only what the board cannot show. jira/phase emptiness is visible on the board's 
 1. Determine the checks: from the command if specified (`paths`, `done-date`, combinable; `all` = everything). If unspecified, ask once with multi-select choices.
 2. Scan `todo/` (exclude `archive/`): read the frontmatter and the `## Related files` section of every task file. Do not scan the codebase.
 3. Report one table: file → missing items. End with counts per check.
-4. Suggest fixes (e.g. "ask BA for missing tickets", "fill paths before starting work") but edit nothing.
+4. Suggest fixes (e.g. "ask for the missing ticket links", "fill paths before starting work") but edit nothing.

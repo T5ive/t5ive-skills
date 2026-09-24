@@ -1,0 +1,41 @@
+sequenceDiagram
+    autonumber
+    actor Dev
+    participant AI as AI session
+    participant F as ไฟล์งาน .md
+    participant J as Jira
+    actor T as Tester
+
+    Dev->>AI: (1) todo-init — ครั้งเดียวต่อโปรเจกต์ใหม่
+    Dev->>AI: (2-3) รับ req ลูกค้า ลง inbox.md → todo-triage
+    AI->>F: สร้างไฟล์งาน stage: todo
+    Dev->>F: (4) เติมรายละเอียด — Related files / Skills ticks
+    Dev->>AI: (5) todo-next หรือระบุไฟล์เอง
+    AI->>F: (6) stage: wip — เริ่มทำงาน
+    opt (5.1) งานไม่เกี่ยวกัน 2-3 งาน
+        Dev->>AI: todo-parallel — แยกเป็น subagents
+    end
+    AI->>F: (6) จบ session งานเสร็จ: append Progress + stage: test
+    Dev->>F: (7) dev test
+    loop (7.2) ไม่ผ่าน — แจ้ง AI ใน session นั้น แก้จนกว่าจะผ่าน
+        Dev->>AI: ยังไม่ผ่าน — เพราะ ...
+        AI->>F: แก้ต่อ → append Progress + stage: test
+        Dev->>F: dev test ใหม่
+    end
+    Dev->>J: (7.1) ผ่าน: In progress → Test — manual บน Jira, AI ช่วยไม่ได้
+    T-->>Dev: ตรวจรับ: ผ่าน / ไม่ผ่าน
+    alt (8.1) Tester ไม่ผ่าน
+        Dev->>F: บอร์ด Testing: แก้ stage test → wip
+        Dev->>F: append Progress: Tester ไม่ผ่าน เพราะ xxx
+        Note over F: ขึ้น view WIP — todo-next เจอและจัดอันดับให้ทำต่อ
+    else (8.2 / 8.3) Tester ผ่าน
+        opt (8.2) ปิดมือในบอร์ด
+            Dev->>F: ใส่ done date ก่อน แล้ว status: done — row หายทันที
+        end
+        opt (8.3) เรียก todo-finish
+            Dev->>AI: ปิดงาน (todo-finish)
+            AI->>F: status: done + done: วันนี้
+        end
+        Dev->>AI: เก็บกวาด (todo-sweep)
+        AI->>F: git mv → todo/archive/YYYY-MM/
+    end

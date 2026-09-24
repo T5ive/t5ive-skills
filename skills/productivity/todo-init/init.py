@@ -30,7 +30,7 @@ Task files live in `todo/` — 1 file = 1 feature/bug/refactor, kebab-case Engli
 5. Read the task file before starting work on it.
 6. When starting work, fill `## Related files` if the user left it empty or incomplete; skip if `## Progress` already records the files.
 7. At the end of a work session append one line to the task file: `- YYYY-MM-DD: <what happened>` (append only).
-8. When BA creates a ticket, set `jira: JIRA:KEY-123` (Jira Issue plugin inline format).
+8. When a Jira ticket is created for this task, set `jira: JIRA:KEY-123` (Jira Issue plugin inline format).
 9. Customer change requests are `type: feature`: append to the still-open original feature file; create a new file only if the original is done or archived.
 """
 
@@ -47,6 +47,30 @@ MISC = """# Misc
 
 Misc / questions / remarks — one line per topic
 """
+
+def stage_view(name: str, stage: str) -> str:
+    """One table view pinned to a single stage. Columns stage/status/done are on
+    purpose — Obsidian Bases tables edit them inline, so rejected work goes back
+    to wip and finished work gets its done date without opening the file."""
+    return (
+        "  - type: table\n"
+        f"    name: {name}\n"
+        "    filters:\n"
+        "      and:\n"
+        f'        - stage == "{stage}"\n'
+        "    order:\n"
+        "      - name\n"
+        "      - stage\n"
+        "      - status\n"
+        "      - done\n"
+        "      - jira\n"
+        "      - created\n"
+        "      - file.name\n"
+        "    sort:\n"
+        "      - property: created\n"
+        "        direction: ASC\n"
+    )
+
 
 def board_yaml(with_phase: bool) -> str:
     """Build the _board.base content. No placeholders — the returned string is final."""
@@ -77,6 +101,8 @@ def board_yaml(with_phase: bool) -> str:
         "    columnSize:\n"
         "      note.type: 94\n"
         "      file.name: 120\n"
+        + stage_view("WIP", "wip")
+        + stage_view("Testing", "test")
     )
 
 JIRA_MD = """# Jira — Open Work

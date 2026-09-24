@@ -67,6 +67,27 @@ class TodoInitTests(unittest.TestCase):
             self.assertIn("## Phase 2", inbox)
             self.assertIn("## Phase 3", inbox)
 
+    def test_board_has_all_wip_testing_views(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            result = subprocess.run(
+                [sys.executable, str(SCRIPT), str(root)],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            board = (root / "todo/_board.base").read_text(encoding="utf-8")
+            self.assertIn('status != "done"', board)
+            self.assertIn("name: All", board)
+            self.assertIn("name: WIP", board)
+            self.assertIn('stage == "wip"', board)
+            self.assertIn("name: Testing", board)
+            self.assertIn('stage == "test"', board)
+            self.assertIn("- status", board)
+            self.assertIn("- done", board)
+
 
 if __name__ == "__main__":
     unittest.main()
