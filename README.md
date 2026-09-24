@@ -16,7 +16,7 @@ T5ive's Codex and Claude Code plugin for skill routing, review workflows, intera
 | `todo-next` | Productivity | Recommends `mise`/`wip` tasks, lists `test` as waiting, and skips `todo`/`preop` content. |
 | `todo-audit` | Productivity | Reports missing related paths outside `todo`/`preop`, plus missing done dates. |
 | `todo-sweep` | Productivity | Moves `status: done` files into `todo/archive/YYYY-MM/` and proposes a commit. |
-| `todo-parallel` | Productivity | Runs 2–3 unrelated `mise`/`wip` tasks as background subagents, then commits each task separately. |
+| `todo-parallel` | Productivity | Runs 2–3 unrelated `mise`/`wip` tasks as background subagents; commits explicitly selected tasks only after dev tests pass. |
 | `todo-finish` | Productivity | Closes `test` tasks or returns failures to `wip` with the reason recorded in Progress. |
 
 Workflow diagrams for the todo system (lifecycle + worked scenario): [skills/references/todo-diagrams.md](skills/references/todo-diagrams.md) — raw `.mmd` sources in `assets/`.

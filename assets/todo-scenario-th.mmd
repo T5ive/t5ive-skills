@@ -3,6 +3,7 @@ sequenceDiagram
     actor Dev
     participant AI as AI session
     participant F as ไฟล์งาน .md
+    participant G as Git
     participant J as Jira
     actor T as Tester
 
@@ -20,7 +21,7 @@ sequenceDiagram
     opt (5.1) งานไม่เกี่ยวกัน 2-3 งาน
         Dev->>AI: todo-parallel — แยกเป็น subagents
     end
-    AI->>F: (6) จบ session งานเสร็จ: append Progress + stage: test
+    AI->>F: (6) จบ session งานเสร็จ: append Progress + stage: test — ยังไม่ commit
     Dev->>F: (7) dev test
     loop (7.2) ไม่ผ่าน — แจ้ง AI ใน session นั้น แก้จนกว่าจะผ่าน
         Dev->>AI: ยังไม่ผ่าน — เพราะ ...
@@ -28,6 +29,8 @@ sequenceDiagram
         AI->>F: แก้เสร็จ → stage: test
         Dev->>F: dev test ใหม่
     end
+    Dev->>AI: dev test ผ่าน — ระบุงานที่ให้ commit
+    AI->>G: commit แยกเฉพาะงานที่ระบุ
     Dev->>J: (7.1) ผ่าน: In progress → Test — manual บน Jira, AI ช่วยไม่ได้
     T-->>Dev: ตรวจรับ: ผ่าน / ไม่ผ่าน
     alt (8.1) Tester ไม่ผ่าน

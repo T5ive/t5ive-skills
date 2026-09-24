@@ -14,7 +14,7 @@ Use this reference to distinguish nearby workflows. Check the current host's ski
 - `todo-next`: recommend `mise`/`wip` work, list `test` as waiting, and leave `todo`/`preop` content to the dev.
 - `todo-audit`: report missing related paths outside `todo`/`preop` and missing done dates.
 - `todo-sweep`: archive `status: done` task files into `todo/archive/YYYY-MM/`.
-- `todo-parallel`: run unrelated `mise`/`wip` tasks as parallel subagents with separate commits.
+- `todo-parallel`: run unrelated `mise`/`wip` tasks as parallel subagents; commit explicitly selected tasks only after dev tests pass.
 - `todo-finish`: close or revert `stage: test` tasks — `status: done` + done date, or back to `wip` with the rejection reason in Progress.
 
 ## Matt Pocock v1.2.3

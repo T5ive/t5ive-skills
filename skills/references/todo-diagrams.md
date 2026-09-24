@@ -65,6 +65,7 @@ sequenceDiagram
     actor Dev
     participant AI as AI session
     participant F as ไฟล์งาน .md
+    participant G as Git
     participant J as Jira
     actor T as Tester
 
@@ -82,7 +83,7 @@ sequenceDiagram
     opt (5.1) งานไม่เกี่ยวกัน 2-3 งาน
         Dev->>AI: todo-parallel — แยกเป็น subagents
     end
-    AI->>F: (6) จบ session งานเสร็จ: append Progress + stage: test
+    AI->>F: (6) จบ session งานเสร็จ: append Progress + stage: test — ยังไม่ commit
     Dev->>F: (7) dev test
     loop (7.2) ไม่ผ่าน — แจ้ง AI ใน session นั้น แก้จนกว่าจะผ่าน
         Dev->>AI: ยังไม่ผ่าน — เพราะ ...
@@ -90,6 +91,8 @@ sequenceDiagram
         AI->>F: แก้เสร็จ → stage: test
         Dev->>F: dev test ใหม่
     end
+    Dev->>AI: dev test ผ่าน — ระบุงานที่ให้ commit
+    AI->>G: commit แยกเฉพาะงานที่ระบุ
     Dev->>J: (7.1) ผ่าน: In progress → Test — manual บน Jira, AI ช่วยไม่ได้
     T-->>Dev: ตรวจรับ: ผ่าน / ไม่ผ่าน
     alt (8.1) Tester ไม่ผ่าน
@@ -113,8 +116,8 @@ sequenceDiagram
 
 - **(1) ติดตั้ง:** todo-init ครั้งเดียวต่อโปรเจกต์ — สร้าง `todo/`, บอร์ด 6 views และกฎใน AGENTS.md
 - **(2–4) รับและเตรียมงาน:** req ลง `inbox.md` → todo-triage สร้างไฟล์ `stage: todo` → dev เติม Related files / Skills ticks แล้วตั้ง `mise`; ถ้ารอข้อมูลระยะสั้น dev ตั้ง `preop` ก่อน AI ไม่อ่านเนื้อหาของ `todo`/`preop`
-- **(5–6) เลือกและลงมือ:** todo-next เสนอเฉพาะ `mise`/`wip` หรือระบุไฟล์ที่พร้อมเอง → `mise → wip` — งานไม่เกี่ยวกัน 2–3 งานใช้ todo-parallel (5.1) ได้ → จบ session ที่งานเสร็จ AI append `## Progress` + `stage: test`
-- **(7) dev test:** ไม่ผ่าน (7.2) → `stage: wip` พร้อมจดเหตุผลใน Progress แล้วแก้จนกลับ `test`; ผ่านแล้ว (7.1) dev ย้าย Jira เป็น Test **manual บน Jira — AI ช่วยไม่ได้**
+- **(5–6) เลือกและลงมือ:** todo-next เสนอเฉพาะ `mise`/`wip` หรือระบุไฟล์ที่พร้อมเอง → `mise → wip` — งานไม่เกี่ยวกัน 2–3 งานใช้ todo-parallel (5.1) ได้ → จบ session ที่งานเสร็จ AI append `## Progress` + `stage: test` โดยยังไม่ commit
+- **(7) dev test:** ไม่ผ่าน (7.2) → `stage: wip` พร้อมจดเหตุผลใน Progress แล้วแก้จนกลับ `test`; ผ่านแล้ว dev ระบุงานที่จะ commit โดยแยกหนึ่ง commit ต่องาน จากนั้นย้าย Jira เป็น Test **manual บน Jira — AI ช่วยไม่ได้**
 - **(8.1) Tester ไม่ผ่าน:** dev แก้ stage เป็น wip ในบอร์ด (หรือ `finish.py --revert`) + **แนบเหตุผลลง `## Progress` เสมอ** — งานขึ้น view WIP แล้ว todo-next จัดอันดับให้ทำต่อ (วนกลับไปขั้นแก้งาน)
 - **(8.2 / 8.3) Tester ผ่าน — เลือกทางหนึ่ง:** ปิดมือในบอร์ด (8.2: ใส่ done date **ก่อน** status: done เพราะ row หายทันที) หรือเรียก todo-finish (8.3: `status: done` + done วันนี้ในคำสั่งเดียว)
 - **(ปิดท้าย) เก็บกวาด:** todo-sweep ย้ายไฟล์ไป `todo/archive/YYYY-MM/` ตามเดือนของวันที่ done
