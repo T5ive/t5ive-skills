@@ -74,3 +74,4 @@ Decide while classifying (same pass, no extra analysis):
 
 - `refactor` tasks also live in `features/`; the `type` field distinguishes them.
 - An open file already covering the same topic → append there, don't duplicate.
+- If an inbox item adds work to a matching task at `stage: test`, return it to `stage: wip`.

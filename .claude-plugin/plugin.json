@@ -18,6 +18,7 @@
     "./skills/productivity/grill-with-choice",
     "./skills/productivity/todo-init",
     "./skills/productivity/todo-triage",
+    "./skills/productivity/todo-triage-chat",
     "./skills/productivity/todo-next",
     "./skills/productivity/todo-audit",
     "./skills/productivity/todo-sweep",

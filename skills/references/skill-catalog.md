@@ -10,7 +10,8 @@ Use this reference to distinguish nearby workflows. Check the current host's ski
 - `git-commit`: create a Conventional Commit message in Thai.
 - `grill-with-choice` runs Matt's `grilling` skill with host-native selectable answers in each round; it requires that skill in the current host.
 - `todo-init`: bootstrap a project's `todo/` task system, including All/Todo/Preop/Mise/WIP/Testing board views and workflow rules.
-- `todo-triage`: sort raw `todo/inbox.md` notes into `stage: todo` files; keeps inbox headers.
+- `todo-triage`: sort `todo/inbox.md` notes into task files; reopens matching `test` tasks as `wip` when inbox work is added.
+- `todo-triage-chat`: turn the current conversation into a task, asking for missing details or using Matt's `grilling` skill when context is absent.
 - `todo-next`: recommend `mise`/`wip` work, list `test` as waiting, and leave `todo`/`preop` content to the dev.
 - `todo-audit`: report missing related paths outside `todo`/`preop` and missing done dates.
 - `todo-sweep`: archive `status: done` task files into `todo/archive/YYYY-MM/`.
@@ -76,7 +77,7 @@ Recommend only when the 9arm plugin is available.
 ## Other overlaps
 
 - `debug-mantra` and `diagnosing-bugs` both address bugs: use the former for a concise reproduce-and-trace discipline, and the latter for hard, flaky, or performance diagnosis. Use `post-mortem` after a fix is understood and validated.
-- `todo-triage` sorts a personal `todo/inbox.md` into task files; Matt's `triage` triages GitHub issues and PRs. Different domains despite the shared word.
+- `todo-triage` sorts a personal `todo/inbox.md`; `todo-triage-chat` turns the current conversation into a task. Matt's `triage` triages GitHub issues and PRs. Different domains despite the shared word.
 - `grill-with-choice` changes how Matt's `grilling` asks each question; it does not create project documentation. Matt's `grill-with-docs` combines `grilling` with `domain-modeling` to capture vocabulary and decisions as `CONTEXT.md`/ADR docs. They are separate wrappers for selectable answers and persistent docs, and can be used together when both are wanted.
 - Ponytail actively reduces complexity; Karpathy's guidelines are broader coding heuristics. They can complement each other without being one workflow.
 - `skill-guide` recommends and waits. `skill-navigator` selects and acts. `review-with-choice` is the specialized menu for review workflows.

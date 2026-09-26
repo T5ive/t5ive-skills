@@ -13,6 +13,7 @@ Plugin สำหรับ Codex และ Claude Code รวมสกิลช�
 | `grill-with-choice` | Productivity | ใช้ workflow `grilling` ของ Matt โดยถามแต่ละรอบเป็นตัวเลือกที่กดได้ (ต้องมีสกิลนี้ใน host) |
 | `todo-init` | Productivity | ติดตั้งระบบ `todo/` พร้อมบอร์ด All/Todo/Preop/Mise/WIP/Testing และกฎใน AGENTS.md |
 | `todo-triage` | Productivity | แยกโน้ตใน `todo/inbox.md` เป็นไฟล์ `stage: todo` และคง header inbox |
+| `todo-triage-chat` | Productivity | เปลี่ยนบทสนทนาเป็น task โดยถามข้อมูลที่ขาด หรือใช้ Matt `grilling` เมื่อไม่มีบริบทโจทย์ |
 | `todo-next` | Productivity | เสนอเฉพาะงาน `mise`/`wip`, แสดง `test` ที่รอผล และข้ามเนื้อหา `todo`/`preop` |
 | `todo-audit` | Productivity | รายงาน Related files ที่ขาดนอก `todo`/`preop` และวันที่ done ที่ขาด |
 | `todo-sweep` | Productivity | ย้ายไฟล์ `status: done` ลง `todo/archive/YYYY-MM/` พร้อมเสนอ commit |

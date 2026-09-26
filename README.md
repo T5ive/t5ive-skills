@@ -12,7 +12,8 @@ T5ive's Codex and Claude Code plugin for skill routing, review workflows, intera
 | `skill-guide` | Productivity | Recommends a skill or workflow and waits for the user's decision. |
 | `grill-with-choice` | Productivity | Runs Matt's `grilling` workflow with selectable answers in each round; requires that skill in the host. |
 | `todo-init` | Productivity | Bootstraps the `todo/` system, including All/Todo/Preop/Mise/WIP/Testing board views and workflow rules. |
-| `todo-triage` | Productivity | Sorts inbox notes into `stage: todo` files; keeps inbox headers intact. |
+| `todo-triage` | Productivity | Sorts inbox notes into `stage: todo` files and keeps inbox headers intact. |
+| `todo-triage-chat` | Productivity | Turns the current conversation into a task, asking for missing details or using Matt's `grilling` skill when context is absent. |
 | `todo-next` | Productivity | Recommends `mise`/`wip` tasks, lists `test` as waiting, and skips `todo`/`preop` content. |
 | `todo-audit` | Productivity | Reports missing related paths outside `todo`/`preop`, plus missing done dates. |
 | `todo-sweep` | Productivity | Moves `status: done` files into `todo/archive/YYYY-MM/` and proposes a commit. |
