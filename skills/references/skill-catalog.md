@@ -6,7 +6,7 @@ Use this reference to distinguish nearby workflows. Check the current host's ski
 
 - `skill-navigator`: choose and run a suitable available skill workflow.
 - `skill-guide`: recommend available skills, explain the fit and sequence, and wait for the user's decision.
-- `review-with-choice`: show review options, recommend one, and start the user's selection.
+- `review-with-choice`: recommend and run a review route, then offer recommended actions for its findings.
 - `git-commit`: create a Conventional Commit message in Thai.
 - `grill-with-choice` runs Matt's `grilling` skill with host-native selectable answers in each round; it requires that skill in the current host.
 - `todo-init`: bootstrap a project's `todo/` task system, including All/Todo/Preop/Mise/WIP/Testing board views and workflow rules.
@@ -71,7 +71,7 @@ Recommend only when the 9arm plugin is available.
 | Find removable complexity across a repo | Ponytail `ponytail-audit` | Deletion and simplification, not architecture deepening. |
 | Find opportunities to deepen modules | Matt `improve-codebase-architecture` | Architecture direction, not a bloat audit. |
 
-`review-with-choice` presents the available review routes and runs the one the user selects. Its “Scrutinize with finding choices” route runs 9arm `scrutinize`, then asks per finding whether to fix it, skip it, or investigate further. Make no edits until the user selects a finding to fix.
+`review-with-choice` presents the available review routes and runs the one the user selects. After the selected skill returns its normal review report, the wrapper recommends and offers an action for each finding: fix, skip, or investigate further. Make no edits until the user selects a finding to fix.
 
 ## Other overlaps
 

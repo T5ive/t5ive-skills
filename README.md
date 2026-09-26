@@ -8,7 +8,7 @@ T5ive's Codex and Claude Code plugin for skill routing, review workflows, intera
 |---|---|---|
 | `skill-navigator` | Engineering | Chooses and runs a suitable available skill workflow. |
 | `git-commit` | Engineering | Writes Thai Conventional Commit messages with emoji. |
-| `review-with-choice` | Engineering | Offers review approaches, recommends one, then runs the selected skill. |
+| `review-with-choice` | Engineering | Recommends and runs a review approach, then offers actions for its findings. |
 | `skill-guide` | Productivity | Recommends a skill or workflow and waits for the user's decision. |
 | `grill-with-choice` | Productivity | Runs Matt's `grilling` workflow with selectable answers in each round; requires that skill in the host. |
 | `todo-init` | Productivity | Bootstraps the `todo/` system, including All/Todo/Preop/Mise/WIP/Testing board views and workflow rules. |

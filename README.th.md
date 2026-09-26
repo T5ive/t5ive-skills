@@ -8,7 +8,7 @@ Plugin สำหรับ Codex และ Claude Code รวมสกิลช�
 |---|---|---|
 | `skill-navigator` | Engineering | เลือกและเริ่มใช้ workflow ที่เหมาะกับงาน |
 | `git-commit` | Engineering | เขียน Conventional Commit พร้อม emoji เป็นภาษาไทย |
-| `review-with-choice` | Engineering | แสดงตัวเลือกวิธีรีวิว แนะนำวิธีที่เหมาะ แล้วเริ่มวิธีที่ผู้ใช้เลือก |
+| `review-with-choice` | Engineering | แนะนำและเริ่มวิธีรีวิวที่เลือก แล้วเสนอตัวเลือกดำเนินการกับ findings |
 | `skill-guide` | Productivity | แนะนำสกิลหรือลำดับใช้ แล้วรอผู้ใช้ตัดสินใจ |
 | `grill-with-choice` | Productivity | ใช้ workflow `grilling` ของ Matt โดยถามแต่ละรอบเป็นตัวเลือกที่กดได้ (ต้องมีสกิลนี้ใน host) |
 | `todo-init` | Productivity | ติดตั้งระบบ `todo/` พร้อมบอร์ด All/Todo/Preop/Mise/WIP/Testing และกฎใน AGENTS.md |
