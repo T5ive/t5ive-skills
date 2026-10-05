@@ -18,7 +18,7 @@ Use this reference to distinguish nearby workflows. Check the current host's ski
 - `todo-parallel`: run unrelated `mise`/`wip` tasks as parallel subagents; commit explicitly selected tasks only after dev tests pass.
 - `todo-finish`: close or revert `stage: test` tasks — `status: done` + done date, or back to `wip` with the rejection reason in Progress.
 
-## Matt Pocock v1.2.3
+## Matt Pocock v1.3.1
 
 Recommend these only when the Matt plugin is available in the host.
 
@@ -33,15 +33,15 @@ Recommend these only when the Matt plugin is available in the host.
 | Prototype a state model or UI | `prototype` |
 | Research a question with cited sources | `research` |
 | Turn a conversation into a spec or tickets | `to-spec` → `to-tickets` |
-| Implement a spec or ticket | `implement`, with `tdd` as needed |
-| Resolve an active merge conflict | `resolving-merge-conflicts` |
+| Implement one ticket | `implement` (user-invoked), with `tdd` as needed |
+| Implement a whole spec across its ticket graph | `implement-spec` (user-invoked) → parallel implementers on ready tickets, one integration branch, then `code-review` |
+| Write a pull request body | `pr` (model-invoked when writing a PR body) |
+| Review a coding session for environment improvements | `retro` (user-invoked, after the work) |
 | Maintain domain terms and ADRs | `domain-modeling` |
 | Prepare a repo for Matt engineering workflows | `setup-matt-pocock-skills` |
 | Triage issues and external PRs | `triage` |
 | Learn a concept over multiple sessions | `teach` |
 | Hand work to a fresh context | `handoff` |
-
-The v1.2.3 release adds secret redaction guidance to `diagnosing-bugs`, makes several subagent-dispatch instructions harness-neutral, and removes time estimates from `wizard`.
 
 ## 9arm
 
@@ -78,6 +78,6 @@ Recommend only when the 9arm plugin is available.
 
 - `debug-mantra` and `diagnosing-bugs` both address bugs: use the former for a concise reproduce-and-trace discipline, and the latter for hard, flaky, or performance diagnosis. Use `post-mortem` after a fix is understood and validated.
 - `todo-triage` sorts a personal `todo/inbox.md`; `todo-triage-chat` turns the current conversation into a task. Matt's `triage` triages GitHub issues and PRs. Different domains despite the shared word.
-- `grill-with-choice` changes how Matt's `grilling` asks each question; it does not create project documentation. Matt's `grill-with-docs` combines `grilling` with `domain-modeling` to capture vocabulary and decisions as `CONTEXT.md`/ADR docs. They are separate wrappers for selectable answers and persistent docs, and can be used together when both are wanted.
+- `grill-with-choice` changes how Matt's `grilling` asks each question; it does not create project documentation. Matt's `grill-with-docs` combines `grilling` with `domain-modeling` to capture vocabulary in `GLOSSARY.md`/`GLOSSARY-MAP.md` and decisions in ADRs. They are separate wrappers for selectable answers and persistent docs, and can be used together when both are wanted.
 - Ponytail actively reduces complexity; Karpathy's guidelines are broader coding heuristics. They can complement each other without being one workflow.
 - `skill-guide` recommends and waits. `skill-navigator` selects and acts. `review-with-choice` is the specialized menu for review workflows.
