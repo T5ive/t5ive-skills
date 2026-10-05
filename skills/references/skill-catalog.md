@@ -81,3 +81,14 @@ Recommend only when the 9arm plugin is available.
 - `grill-with-choice` changes how Matt's `grilling` asks each question; it does not create project documentation. Matt's `grill-with-docs` combines `grilling` with `domain-modeling` to capture vocabulary in `GLOSSARY.md`/`GLOSSARY-MAP.md` and decisions in ADRs. They are separate wrappers for selectable answers and persistent docs, and can be used together when both are wanted.
 - Ponytail actively reduces complexity; Karpathy's guidelines are broader coding heuristics. They can complement each other without being one workflow.
 - `skill-guide` recommends and waits. `skill-navigator` selects and acts. `review-with-choice` is the specialized menu for review workflows.
+
+## .NET skills
+
+Use the full `plugin:skill` ID and recommend it only when it appears in the current host.
+
+- C# refactoring / local SDK: `dotnet:csharp-refactoring` preserves behavior; use `dotnet:setup-local-sdk` only for project-local preview or pinned SDK setups. Refactoring is not for ordinary feature/bug work or standalone upgrades.
+- MSBuild: `dotnet:msbuild` handles general build failures, performance, and project-file review; `dotnet-msbuild:<skill>` handles a specific binlog, build-performance, or project-file issue.
+- ASP.NET Core and data: `dotnet-aspnetcore:dotnet-webapi` is for API endpoint behavior; `dotnet-data:create-datadriven-aspnetcore` scaffolds CRUD from a model/`DbContext`; `dotnet-data:optimizing-ef-core-queries` targets slow EF Core queries.
+- Runtime performance: `dotnet-diag:analyzing-dotnet-performance` scans code; `dotnet-diag:dotnet-trace-collect` and `dotnet-diag:dump-collect` collect runtime evidence; `dotnet-diag:microbenchmarking` is for BenchmarkDotNet. Use platform-specific symbolication skills only for matching crash logs.
+- Tests: `dotnet-test:code-testing-agent` writes test cases; `dotnet-test:scaffold-dotnet-test-project` creates or repairs test projects; `dotnet-test:run-tests` selects test commands and filters. Choose the matching specialist for test quality, coverage, platform, MSTest, MTP, or testability work.
+- `filter-syntax`, `code-testing-extensions`, and `test-analysis-extensions` are internal references; do not recommend them directly.
