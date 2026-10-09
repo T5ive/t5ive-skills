@@ -59,7 +59,7 @@ def view_layout(with_phase: bool, testing: bool = False) -> str:
         + testing_cols
         + "      - type\n"
         + phase_col
-        + "      - created\n"
+        + "      - formula.created_display\n"
         + "      - jira\n"
         + "      - file.name\n"
         + "    sort:\n"
@@ -94,6 +94,11 @@ def board_yaml(with_phase: bool) -> str:
         "  and:\n"
         '    - file.hasProperty("status")\n'
         '    - status != "done"\n'
+        "formulas:\n"
+        '  created_display: \'if(created, created.format("DD/MM/YYYY"), "")\'\n'
+        "properties:\n"
+        "  formula.created_display:\n"
+        "    displayName: created\n"
         "views:\n"
         "  - type: table\n"
         "    name: All\n"

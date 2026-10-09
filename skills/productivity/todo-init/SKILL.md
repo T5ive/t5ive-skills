@@ -32,7 +32,7 @@ All flags optional. Pass `--no-board` / `--no-jira` for anything declined in ste
 - `todo/inbox.md` with default headers: `## General`, `## Misc`, `## Phase N` (only the chosen phases)
 - `todo/backlog.md`, `todo/misc.md`
 - `todo/_board.base` — six tables (Obsidian Bases), all filtered to files that have `status` and `status != "done"`:
-  - **All** — every open task: columns name (title)/stage/type/phase*/created/jira + a narrow `file.name` for click-to-open (`phase` only in phase projects), sorted by `created` (oldest first) → `type` (ASC = bug < feature < refactor, so bugs float up) → `name` (a–z). All stage views share its columns, sort and widths; `phase` appears in every view for phase projects.
+  - **All** — every open task: columns name (title)/stage/type/phase*/created (shown as `DD/MM/YYYY`)/jira + a narrow `file.name` for click-to-open (`phase` only in phase projects), sorted by the raw `created` date (oldest first) → `type` (ASC = bug < feature < refactor, so bugs float up) → `name` (a–z). All stage views share its columns, sort and widths; `phase` appears in every view for phase projects.
   - **Todo** — `stage == "todo"`: newly triaged work waiting for the dev to prepare; AI does not start these tasks.
   - **Preop** — `stage == "preop"`: short-term information or test results the dev is waiting for; AI does not start these tasks.
   - **Mise** — `stage == "mise"`: details prepared by the dev, ready for todo-next or todo-parallel.
@@ -53,7 +53,7 @@ All flags optional. Pass `--no-board` / `--no-jira` for anything declined in ste
 
 ### 4. No python on the machine → manual fallback
 
-Create the same pieces by hand — the exact contents live as constants in init.py (`INBOX_INTRO`, `BACKLOG`, `MISC`, `JIRA_MD`, `RULES`); copy them from there, never from memory. For `_board.base` there is **no constant** — build the YAML from the description in step 2 (six tables: the shared `status != "done"` filter, All's layout shared by the stage views, Testing's extra `status`/`done` columns, and per-view `filters`). Never leave `{...}` placeholders in the file.
+Create the same pieces by hand — the exact contents live as constants in init.py (`INBOX_INTRO`, `BACKLOG`, `MISC`, `JIRA_MD`, `RULES`); copy them from there, never from memory. For `_board.base` there is **no constant** — build the YAML from the description in step 2, including the `created_display` formula (`if(created, created.format("DD/MM/YYYY"), "")`) and its `created` display name; sort by raw `created`. Never leave `{...}` placeholders in the file.
 
 ### 5. Closing summary — after the script, tell the user
 
