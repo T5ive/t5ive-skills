@@ -80,7 +80,7 @@ class TodoInitTests(unittest.TestCase):
             self.assertIn("## Phase 2", inbox)
             self.assertIn("## Phase 3", inbox)
 
-    def test_board_has_all_todo_preop_mise_wip_testing_views(self):
+    def test_board_has_all_todo_preop_mise_wip_probe_gate_views(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             result = subprocess.run(
@@ -92,8 +92,8 @@ class TodoInitTests(unittest.TestCase):
 
             self.assertEqual(result.returncode, 0, result.stderr)
             board = (root / "todo/_board.base").read_text(encoding="utf-8")
-            self.assertIn('status != "done"', board)
-            self.assertEqual(board.count("  - type: table"), 6)
+            self.assertIn('status != "fin"', board)
+            self.assertEqual(board.count("  - type: table"), 7)
             self.assertIn("name: All", board)
             self.assertIn("name: Todo", board)
             self.assertIn('stage == "todo"', board)
@@ -103,14 +103,16 @@ class TodoInitTests(unittest.TestCase):
             self.assertIn('stage == "mise"', board)
             self.assertIn("name: WIP", board)
             self.assertIn('stage == "wip"', board)
-            self.assertIn("name: Testing", board)
-            self.assertIn('stage == "test"', board)
+            self.assertIn("name: Probe", board)
+            self.assertIn('stage == "probe"', board)
+            self.assertIn("name: Gate", board)
+            self.assertIn('stage == "gate"', board)
             all_layout = view_layout(board, "All")
-            for name in ("Todo", "Preop", "Mise", "WIP"):
+            for name in ("Todo", "Preop", "Mise", "WIP", "Probe"):
                 with self.subTest(view=name):
                     self.assertEqual(view_layout(board, name), all_layout)
             self.assertEqual(
-                view_layout(board, "Testing"),
+                view_layout(board, "Gate"),
                 all_layout.replace(
                     "      - stage\n", "      - stage\n      - status\n      - done\n", 1
                 ),
@@ -118,7 +120,8 @@ class TodoInitTests(unittest.TestCase):
             ignored = (root / ".gitignore").read_text(encoding="utf-8").splitlines()
             self.assertIn("/todo/.obsidian/", ignored)
             rules = (root / "AGENTS.md").read_text(encoding="utf-8")
-            self.assertIn("stage: todo|preop|mise|wip|test", rules)
+            self.assertIn("stage: todo|preop|mise|wip|probe|gate", rules)
+            self.assertIn("status: open|fin", rules)
 
     def test_stage_views_keep_phase_column(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -134,11 +137,11 @@ class TodoInitTests(unittest.TestCase):
             board = (root / "todo/_board.base").read_text(encoding="utf-8")
             all_layout = view_layout(board, "All")
             self.assertIn("      - phase\n", all_layout)
-            for name in ("Todo", "Preop", "Mise", "WIP"):
+            for name in ("Todo", "Preop", "Mise", "WIP", "Probe"):
                 with self.subTest(view=name):
                     self.assertEqual(view_layout(board, name), all_layout)
             self.assertEqual(
-                view_layout(board, "Testing"),
+                view_layout(board, "Gate"),
                 all_layout.replace(
                     "      - stage\n", "      - stage\n      - status\n      - done\n", 1
                 ),
@@ -161,6 +164,47 @@ class TodoInitTests(unittest.TestCase):
 
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertEqual(board.read_text(encoding="utf-8"), "custom board\n")
+
+    def test_new_recap_rules_are_added_once_and_other_instructions_survive(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            agents = root / "AGENTS.md"
+            prefix = "# Project instructions\n\nKeep user reports in Thai.\n"
+            agents.write_bytes(prefix.encode("utf-8"))
+
+            first = run_init(root)
+            self.assertEqual(first.returncode, 0, first.stderr)
+            created = agents.read_bytes()
+            rules = created.decode("utf-8")
+            self.assertTrue(rules.startswith(prefix))
+            self.assertIn("recap", rules)
+            self.assertIn("## Before / After", rules)
+            self.assertIn("does not invoke recap automatically", rules)
+
+            second = run_init(root)
+            self.assertEqual(second.returncode, 0, second.stderr)
+            self.assertEqual(agents.read_bytes(), created)
+
+    def test_existing_workflow_and_board_are_preserved_together(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            agents = root / "AGENTS.md"
+            original_rules = b"# Custom rules\r\n\r\n## Todo workflow\r\n\r\nUse our own report destination.\r\n"
+            agents.write_bytes(original_rules)
+            todo = root / "todo"
+            todo.mkdir()
+            board = todo / "_board.base"
+            original_board = b"views:\r\n  - name: Custom\r\n    type: table\r\n"
+            board.write_bytes(original_board)
+
+            result = subprocess.run(
+                [sys.executable, str(SCRIPT), str(root), "--no-jira"],
+                capture_output=True, text=True, encoding="utf-8",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(agents.read_bytes(), original_rules)
+            self.assertEqual(board.read_bytes(), original_board)
 
 
 if __name__ == "__main__":

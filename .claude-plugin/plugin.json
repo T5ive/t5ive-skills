@@ -1,7 +1,7 @@
 {
   "name": "t5ive-skills",
   "version": "1.5.2",
-  "description": "T5ive skills for choosing workflows, reviewing changes, grilling through decisions, writing Thai commit messages, and managing a todo/ task system.",
+  "description": "T5ive skills for choosing workflows, reviewing changes, recapping before/after evidence, grilling through decisions, writing Thai commit messages, and managing a todo/ task system.",
   "author": {
     "name": "T5ive",
     "url": "https://github.com/T5ive"
@@ -14,6 +14,7 @@
     "./skills/engineering/skill-navigator",
     "./skills/engineering/git-commit",
     "./skills/engineering/review-with-choice",
+    "./skills/engineering/recap",
     "./skills/productivity/skill-guide",
     "./skills/productivity/grill-with-choice",
     "./skills/productivity/todo-init",

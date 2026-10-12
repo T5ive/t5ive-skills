@@ -17,7 +17,7 @@ Use the user's target project; if none is named, use the current workspace. Reso
    - live-system bug → new file in `bugs/`
    - item under an explicitly misc-like inbox header (e.g. `## Misc`) or the user asked for misc → append one list line to `misc.md` — **never route items to misc.md by your own judgment**: a small standalone item gets its own task file; if it seems too small for a file, add it to the ambiguity batch in step 5 instead
    - wait / low priority → append one section to `backlog.md`: `## <short topic>` + 1–3 lines of the raw note (what it waits for / why low)
-   - customer change request on an existing feature → `type: feature`: find the original by searching open task files for the feature name (0 or >1 match → add to the ambiguity batch in step 5); append a checkbox + the raw note to the still-open original file (new file only if the original is done/archived)
+   - customer change request on an existing feature → `type: feature`: find the original by searching open task files for the feature name (0 or >1 match → add to the ambiguity batch in step 5); append a checkbox + the raw note to the still-open original file (new file only if the original is fin/archived)
    - everything else → new file in `features/` or the matching `phase-X/`
 4. An item under an inbox header `## Phase N` gets `phase: N`. Under `## General` or before any header → no phase.
 5. Batch ALL ambiguous classifications into ONE question round. Use native choice UI when available; if unavailable or the call fails, show numbered choices in chat. Wait for the user's answer before writing anything; an accepted/pending UI request or silence is not a selection.
@@ -30,8 +30,8 @@ Use the user's target project; if none is named, use the current workspace. Reso
 
 ```markdown
 ---
-status: open
-stage: todo          # todo | preop | mise | wip | test
+status: open         # open | fin
+stage: todo          # todo | preop | mise | wip | probe | gate
 type: feature        # feature | bug | refactor
 created: 2026-09-23  # date the file was created — set once at creation, never change
 name: <short task title>
@@ -55,6 +55,7 @@ done:                # set (YYYY-MM-DD) only when Jira reaches Done
 - [ ] tdd — งานที่ต้องมีเทส
 - [ ] diagnosing-bugs — งานบัค
 - [ ] review-with-choice — รีวิวก่อนจบ
+- [ ] recap — สรุปก่อน–หลังเมื่อผู้ใช้สั่ง
 
 ## Related files
 
@@ -74,4 +75,4 @@ Decide while classifying (same pass, no extra analysis):
 
 - `refactor` tasks also live in `features/`; the `type` field distinguishes them.
 - An open file already covering the same topic → append there, don't duplicate.
-- If an inbox item adds work to a matching task at `stage: test`, return it to `stage: wip`.
+- If an inbox item adds work to a matching task at `stage: probe` or `gate`, return it to `stage: wip`.

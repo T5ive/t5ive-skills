@@ -5,12 +5,14 @@ stateDiagram-v2
     preop --> mise: dev ได้ข้อมูลและเตรียมพร้อม
     todo --> mise: dev เติมรายละเอียดครบ
     mise --> wip: เริ่มงาน — todo-next/AI
-    wip --> test: งานเสร็จ จบ session — AI
-    test --> wip: ไม่ผ่าน — จดเหตุผลใน Progress
-    test --> done: Tester ผ่าน — todo-finish หรือบอร์ด
-    todo --> done: ไม่มี ticket ผู้ใช้ประกาศจบ
-    done --> [*]: sweep เก็บ archive/YYYY-MM
-    note right of test
+    wip --> probe: งานเสร็จ จบ session — AI
+    probe --> wip: ไม่ผ่าน — จดเหตุผลใน Progress
+    probe --> gate: dev ยืนยันว่าทดสอบผ่าน — todo-finish --pass หรือบอร์ด
+    gate --> wip: Tester ไม่ผ่าน — จดเหตุผลใน Progress
+    gate --> fin: Jira Done / ผู้ใช้ยืนยันจบ — todo-finish --done หรือบอร์ด
+    todo --> fin: ไม่มี ticket ผู้ใช้ประกาศจบ
+    fin --> [*]: sweep เก็บ archive/YYYY-MM
+    note right of gate
         Jira เป็น manual
         ไฟล์ไม่ mirror สถานะ Jira
     end note

@@ -7,16 +7,17 @@ Use this reference to distinguish nearby workflows. Check the current host's ski
 - `skill-navigator`: choose and run a suitable available skill workflow.
 - `skill-guide`: recommend available skills, explain the fit and sequence, and wait for the user's decision.
 - `review-with-choice`: recommend and run a review route, then offer recommended actions for its findings.
+- `recap`: summarize task-scoped before/after evidence on user request; short behavior report by default, optional technical detail; destination comes from the user, then AGENTS, then chat. It does not close tasks or run a review.
 - `git-commit`: create a Conventional Commit message in Thai.
 - `grill-with-choice` runs Matt's `grilling` skill with host-native selectable answers in each round; it requires that skill in the current host.
-- `todo-init`: bootstrap a project's `todo/` task system, including All/Todo/Preop/Mise/WIP/Testing board views and workflow rules.
-- `todo-triage`: sort `todo/inbox.md` notes into task files; reopens matching `test` tasks as `wip` when inbox work is added.
+- `todo-init`: bootstrap a project's `todo/` task system, including All/Todo/Preop/Mise/WIP/Probe/Gate board views and workflow rules.
+- `todo-triage`: sort `todo/inbox.md` notes into task files; reopens matching `probe`/`gate` tasks as `wip` when inbox work is added.
 - `todo-triage-chat`: turn the current conversation into a task, asking for missing details or using Matt's `grilling` skill when context is absent.
-- `todo-next`: recommend `mise`/`wip` work, list `test` as waiting, and leave `todo`/`preop` content to the dev.
-- `todo-audit`: report missing related paths outside `todo`/`preop` and missing done dates.
-- `todo-sweep`: archive `status: done` task files into `todo/archive/YYYY-MM/`.
+- `todo-next`: recommend `mise`/`wip` work, list `probe` and `gate` as separate waiting queues, and leave `todo`/`preop` content to the dev.
+- `todo-audit`: report missing related paths outside `todo`/`preop` and missing closing dates.
+- `todo-sweep`: archive `status: fin` task files into `todo/archive/YYYY-MM/`.
 - `todo-parallel`: run unrelated `mise`/`wip` tasks as parallel subagents; commit explicitly selected tasks only after dev tests pass.
-- `todo-finish`: close or revert `stage: test` tasks — `status: done` + done date, or back to `wip` with the rejection reason in Progress.
+- `todo-finish`: record dev-confirmed passes (`probe → gate`), close accepted Gate tasks (`status: fin` + `done:` date), or revert Probe/Gate to `wip`; append each result to Progress.
 
 ## Matt Pocock v1.3.1
 
@@ -75,6 +76,8 @@ Recommend only when the 9arm plugin is available.
 `review-with-choice` presents the available review routes and runs the one the user selects. After the selected skill returns its normal review report, the wrapper recommends and offers an action for each finding: fix, skip, or investigate further. Make no edits until the user selects a finding to fix.
 
 ## Other overlaps
+
+- `recap` compares results before/after on request. Review skills look for defects; Matt `pr` formats a PR description with before/after evidence; 9arm `post-mortem` documents the cause and validation of a fixed bug. Use `recap` for a standalone comparison without requiring a PR or bug-fix writeup.
 
 - `debug-mantra` and `diagnosing-bugs` both address bugs: use the former for a concise reproduce-and-trace discipline, and the latter for hard, flaky, or performance diagnosis. Use `post-mortem` after a fix is understood and validated.
 - `todo-triage` sorts a personal `todo/inbox.md`; `todo-triage-chat` turns the current conversation into a task. Matt's `triage` triages GitHub issues and PRs. Different domains despite the shared word.

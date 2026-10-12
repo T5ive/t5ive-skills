@@ -23,15 +23,16 @@ RULES = """## Todo workflow
 
 Task files live in `todo/` — 1 file = 1 feature/bug/refactor, kebab-case English filename, short title (Thai or English) in the `name` property (no `#` heading needed).
 
-1. Jira is the only source of truth for acceptance. Files use `status: open|done` and `stage: todo|preop|mise|wip|test` (dev-side workflow) — never mirror Jira's InProgress/Test into the file.
-2. Set `status: done` + `done: YYYY-MM-DD` when Jira reaches Done, or when the user declares a ticket-less task finished.
-3. Triage creates `stage: todo`. The dev sets `preop` while waiting for short-term information or test results, then `mise` when details are ready. AI leaves `todo` and `preop` alone, sets `wip` when work starts and `test` when work is complete. A failed dev test or Tester rejection returns to `wip` with the reason in `## Progress`.
+1. Jira is the only source of truth for acceptance. Files use `status: open|fin` and `stage: todo|preop|mise|wip|probe|gate` (dev-side workflow) — never mirror Jira's InProgress/Test into the file.
+2. Set `status: fin` + `done: YYYY-MM-DD` when Jira reaches Done, or when the user declares a ticket-less task finished. The `done` field remains the closing date.
+3. Triage creates `stage: todo`. The dev sets `preop` while waiting for short-term information or test results, then `mise` when details are ready. AI leaves `todo` and `preop` alone, sets `wip` when work starts and `probe` when implementation is complete. Only after the dev explicitly confirms their test passed, move `probe` to `gate` (manually or via todo-finish --pass). Automated tests passing alone do not confirm dev testing. `gate` waits for Jira/Tester or final acceptance. A failed dev test or Tester rejection returns `probe`/`gate` to `wip` with the reason in `## Progress`.
 4. Never delete or move task files. Archiving happens only via the sweep command.
 5. Read the task file before starting work on it.
 6. When starting work, fill `## Related files` if the user left it empty or incomplete; skip if `## Progress` already records the files.
 7. At the end of a work session append one line to the task file: `- YYYY-MM-DD: <what happened>` (append only).
 8. When a Jira ticket is created for this task, set `jira: JIRA:KEY-123` (Jira Issue plugin inline format).
-9. Customer change requests are `type: feature`: append to the still-open original feature file; create a new file only if the original is done or archived.
+9. Customer change requests are `type: feature`: append to the still-open original feature file; create a new file only if the original is fin or archived.
+10. When the user requests `recap` for a task with a todo file, append a dated report under `## Before / After` in that task file, preserve previous reports, and reply briefly in chat with a link. An explicit user destination overrides this rule. This sets the destination only; it does not invoke recap automatically or change task status.
 """
 
 INBOX_INTRO = """# Inbox
@@ -48,15 +49,15 @@ MISC = """# Misc
 Misc / questions / remarks
 """
 
-def view_layout(with_phase: bool, testing: bool = False) -> str:
+def view_layout(with_phase: bool, closing: bool = False) -> str:
     """Shared columns, sort, and widths for every board view."""
     phase_col = "      - phase\n" if with_phase else ""
-    testing_cols = "      - status\n      - done\n" if testing else ""
+    closing_cols = "      - status\n      - done\n" if closing else ""
     return (
         "    order:\n"
         "      - name\n"
         "      - stage\n"
-        + testing_cols
+        + closing_cols
         + "      - type\n"
         + phase_col
         + "      - formula.created_display\n"
@@ -83,7 +84,7 @@ def stage_view(name: str, stage: str, with_phase: bool) -> str:
         "    filters:\n"
         "      and:\n"
         f'        - stage == "{stage}"\n'
-        + view_layout(with_phase, testing=stage == "test")
+        + view_layout(with_phase, closing=stage == "gate")
     )
 
 
@@ -93,7 +94,7 @@ def board_yaml(with_phase: bool) -> str:
         "filters:\n"
         "  and:\n"
         '    - file.hasProperty("status")\n'
-        '    - status != "done"\n'
+        '    - status != "fin"\n'
         "formulas:\n"
         '  created_display: \'if(created, created.format("DD/MM/YYYY"), "")\'\n'
         "properties:\n"
@@ -107,7 +108,8 @@ def board_yaml(with_phase: bool) -> str:
         + stage_view("Preop", "preop", with_phase)
         + stage_view("Mise", "mise", with_phase)
         + stage_view("WIP", "wip", with_phase)
-        + stage_view("Testing", "test", with_phase)
+        + stage_view("Probe", "probe", with_phase)
+        + stage_view("Gate", "gate", with_phase)
     )
 
 JIRA_MD = """# Jira — Open Work

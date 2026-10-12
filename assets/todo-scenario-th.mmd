@@ -21,29 +21,36 @@ sequenceDiagram
     opt (5.1) งานไม่เกี่ยวกัน 2-3 งาน
         Dev->>AI: todo-parallel — แยกเป็น subagents
     end
-    AI->>F: (6) จบ session งานเสร็จ: append Progress + stage: test — ยังไม่ commit
+    AI->>F: (6) จบ session งานเสร็จ: append Progress + stage: probe — ยังไม่ commit
+    opt ผู้ใช้สั่งสรุปก่อน–หลัง
+        Dev->>AI: recap
+        AI->>F: เพิ่มรายงานลงวันที่ใน Before / After ตามกฎ AGENTS
+        AI-->>Dev: สรุปสั้นพร้อมลิงก์รายงาน
+    end
     Dev->>F: (7) dev test
     loop (7.2) ไม่ผ่าน — แจ้ง AI ใน session นั้น แก้จนกว่าจะผ่าน
         Dev->>AI: ยังไม่ผ่าน — เพราะ ...
         AI->>F: stage: wip + append Progress เหตุผลไม่ผ่าน
-        AI->>F: แก้เสร็จ → stage: test
+        AI->>F: แก้เสร็จ → stage: probe
         Dev->>F: dev test ใหม่
     end
-    Dev->>AI: dev test ผ่าน — ระบุงานที่ให้ commit
+    Dev->>AI: dev test ผ่าน — ระบุงานที่ผ่านและงานที่ให้ commit
+    AI->>F: todo-finish --pass: probe → gate + append Progress
     AI->>G: commit แยกเฉพาะงานที่ระบุ
     Dev->>J: (7.1) ผ่าน: In progress → Test — manual บน Jira, AI ช่วยไม่ได้
     T-->>Dev: ตรวจรับ: ผ่าน / ไม่ผ่าน
     alt (8.1) Tester ไม่ผ่าน
-        Dev->>F: บอร์ด Testing: แก้ stage test → wip
+        Dev->>F: บอร์ด Gate: แก้ stage gate → wip
         Dev->>F: append Progress: Tester ไม่ผ่าน เพราะ xxx
         Note over F: ขึ้น view WIP — todo-next เจอและจัดอันดับให้ทำต่อ
     else (8.2 / 8.3) Tester ผ่าน
+        Dev->>J: Jira → Done — manual ก่อนปิดไฟล์งาน
         opt (8.2) ปิดมือในบอร์ด
-            Dev->>F: ใส่ done date ก่อน แล้ว status: done — row หายทันที
+            Dev->>F: ใส่ done date ก่อน แล้ว status: fin — row หายทันที
         end
         opt (8.3) เรียก todo-finish
             Dev->>AI: ปิดงาน (todo-finish)
-            AI->>F: status: done + done: วันนี้
+            AI->>F: status: fin + done: วันนี้
         end
         Dev->>AI: เก็บกวาด (todo-sweep)
         AI->>F: git mv → todo/archive/YYYY-MM/

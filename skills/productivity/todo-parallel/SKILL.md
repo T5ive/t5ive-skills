@@ -18,12 +18,12 @@ Use the user's target project; if none is named, use the current workspace. Reso
    - the files it may touch
    - HARD RULE: implement only — no commits, no `git add`, no branch/stash; leave changes in the working tree
 4. Wait for all agents. Review each task's diff (`git diff -- <paths>`).
-5. Append one Progress line per task file (`- YYYY-MM-DD: <what happened>`) and set successful work to `stage: test`. Failed work stays `wip` with its failure recorded in Progress.
-6. Do not commit or stage changes as part of todo-parallel. After the dev confirms which tasks passed tests and explicitly names task files to commit, commit only selected passed tasks, one commit per task; include each task file and follow the git-commit skill format. Leave unselected tasks uncommitted.
+5. Append one Progress line per task file (`- YYYY-MM-DD: <what happened>`) and set successful work to `stage: probe`. Failed work stays `wip` with its failure recorded in Progress.
+6. Do not commit or stage changes as part of todo-parallel. After the dev explicitly confirms which tasks passed dev tests, move only those tasks from `probe` to `gate` via todo-finish --pass and append the confirmation to Progress. Automated tests passing alone do not qualify. When the dev also explicitly names task files to commit, commit only selected passed tasks, one commit per task; include each task file and follow the git-commit skill format. Leave unselected tasks uncommitted.
 7. Large independent tasks → suggest git worktrees instead (one branch per task, merged later).
 
 ## Safety
 
 - The orchestrator is the only one who commits.
 - Never merge two tasks into one commit.
-- An agent failed → leave successful tasks at `stage: test` and uncommitted; report the failure with its task file path.
+- An agent failed → leave successful tasks at `stage: probe` and uncommitted; report the failure with its task file path.

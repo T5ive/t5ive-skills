@@ -9,18 +9,23 @@ Plugin สำหรับ Codex และ Claude Code รวมสกิลช�
 | `skill-navigator` | Engineering | เลือกและเริ่มใช้ workflow ที่เหมาะกับงาน |
 | `git-commit` | Engineering | เขียน Conventional Commit พร้อม emoji เป็นภาษาไทย |
 | `review-with-choice` | Engineering | แนะนำและเริ่มวิธีรีวิวที่เลือก แล้วเสนอตัวเลือกดำเนินการกับ findings |
+| `recap` | Engineering | สรุปก่อน–หลังเมื่อผู้ใช้สั่ง แบบสั้นเป็นค่าเริ่มต้น และเพิ่มรายละเอียดโค้ดได้ |
 | `skill-guide` | Productivity | แนะนำสกิลหรือลำดับใช้ แล้วรอผู้ใช้ตัดสินใจ |
 | `grill-with-choice` | Productivity | ใช้ workflow `grilling` ของ Matt โดยถามแต่ละรอบเป็นตัวเลือกที่กดได้ (ต้องมีสกิลนี้ใน host) |
-| `todo-init` | Productivity | ติดตั้งระบบ `todo/` พร้อมบอร์ด All/Todo/Preop/Mise/WIP/Testing และกฎใน AGENTS.md |
+| `todo-init` | Productivity | ติดตั้งระบบ `todo/` พร้อมบอร์ด All/Todo/Preop/Mise/WIP/Probe/Gate และกฎใน AGENTS.md |
 | `todo-triage` | Productivity | แยกโน้ตใน `todo/inbox.md` เป็นไฟล์ `stage: todo` และคง header inbox |
 | `todo-triage-chat` | Productivity | เปลี่ยนบทสนทนาเป็น task โดยถามข้อมูลที่ขาด หรือใช้ Matt `grilling` เมื่อไม่มีบริบทโจทย์ |
-| `todo-next` | Productivity | เสนอเฉพาะงาน `mise`/`wip`, แสดง `test` ที่รอผล และข้ามเนื้อหา `todo`/`preop` |
+| `todo-next` | Productivity | เสนอเฉพาะงาน `mise`/`wip`, แยกคิว `probe` รอ dev test และ `gate` รอตรวจรับ และข้ามเนื้อหา `todo`/`preop` |
 | `todo-audit` | Productivity | รายงาน Related files ที่ขาดนอก `todo`/`preop` และวันที่ done ที่ขาด |
-| `todo-sweep` | Productivity | ย้ายไฟล์ `status: done` ลง `todo/archive/YYYY-MM/` พร้อมเสนอ commit |
+| `todo-sweep` | Productivity | ย้ายไฟล์ `status: fin` ลง `todo/archive/YYYY-MM/` พร้อมเสนอ commit |
 | `todo-parallel` | Productivity | รัน 2-3 งาน `mise`/`wip` ที่ไม่เกี่ยวกันเป็น subagents; commit เฉพาะงานที่ผู้ใช้เลือกหลัง dev test ผ่าน |
-| `todo-finish` | Productivity | ปิดงาน `test` หรือคืนงานไม่ผ่านไป `wip` พร้อมบันทึกเหตุผลใน Progress |
+| `todo-finish` | Productivity | บันทึก dev ผ่าน (`probe → gate`), ปิดงาน Gate หรือคืนงานไป `wip` พร้อม Progress |
 
 ไดอะแกรม workflow ของระบบ todo (วงจรงาน + scenario ตัวอย่างจริง): [skills/references/todo-diagrams.md](skills/references/todo-diagrams.md) — ต้นฉบับ `.mmd` อยู่ใน `assets/`
+
+### Recap
+
+`recap` สรุปสิ่งที่เปลี่ยนก่อน–หลัง พร้อมผลกระทบและหลักฐาน ค่าเริ่มต้นเน้นพฤติกรรมและผลลัพธ์; สั่ง “แบบละเอียด” เพื่อเพิ่ม logic, API, dependencies และโครงสร้าง ตอบในแชตหรือบันทึกเอกสารตามคำสั่งผู้ใช้และกฎ AGENTS
 
 ## สกิลที่ต้องใช้ร่วมกัน
 

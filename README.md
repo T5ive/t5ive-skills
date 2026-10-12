@@ -9,18 +9,23 @@ T5ive's Codex and Claude Code plugin for skill routing, review workflows, intera
 | `skill-navigator` | Engineering | Chooses and runs a suitable available skill workflow. |
 | `git-commit` | Engineering | Writes Thai Conventional Commit messages with emoji. |
 | `review-with-choice` | Engineering | Recommends and runs a review approach, then offers actions for its findings. |
+| `recap` | Engineering | Summarizes before/after evidence on request; short by default, technical detail when requested. |
 | `skill-guide` | Productivity | Recommends a skill or workflow and waits for the user's decision. |
 | `grill-with-choice` | Productivity | Runs Matt's `grilling` workflow with selectable answers in each round; requires that skill in the host. |
-| `todo-init` | Productivity | Bootstraps the `todo/` system, including All/Todo/Preop/Mise/WIP/Testing board views and workflow rules. |
+| `todo-init` | Productivity | Bootstraps the `todo/` system, including All/Todo/Preop/Mise/WIP/Probe/Gate board views and workflow rules. |
 | `todo-triage` | Productivity | Sorts inbox notes into `stage: todo` files and keeps inbox headers intact. |
 | `todo-triage-chat` | Productivity | Turns the current conversation into a task, asking for missing details or using Matt's `grilling` skill when context is absent. |
-| `todo-next` | Productivity | Recommends `mise`/`wip` tasks, lists `test` as waiting, and skips `todo`/`preop` content. |
+| `todo-next` | Productivity | Recommends `mise`/`wip` tasks, lists `probe` and `gate` as separate waiting queues, and skips `todo`/`preop` content. |
 | `todo-audit` | Productivity | Reports missing related paths outside `todo`/`preop`, plus missing done dates. |
-| `todo-sweep` | Productivity | Moves `status: done` files into `todo/archive/YYYY-MM/` and proposes a commit. |
+| `todo-sweep` | Productivity | Moves `status: fin` files into `todo/archive/YYYY-MM/` and proposes a commit. |
 | `todo-parallel` | Productivity | Runs 2–3 unrelated `mise`/`wip` tasks as background subagents; commits explicitly selected tasks only after dev tests pass. |
-| `todo-finish` | Productivity | Closes `test` tasks or returns failures to `wip` with the reason recorded in Progress. |
+| `todo-finish` | Productivity | Records dev passes (`probe → gate`), closes accepted Gate tasks, or returns failures to `wip` with Progress. |
 
 Workflow diagrams for the todo system (lifecycle + worked scenario): [skills/references/todo-diagrams.md](skills/references/todo-diagrams.md) — raw `.mmd` sources in `assets/`.
+
+### Recap
+
+`recap` summarizes before-and-after changes with their effects and evidence. It covers behavior and results by default; request detail to include logic, APIs, dependencies, and structure. Reports go to chat or a document according to the user's request and AGENTS rules.
 
 ## Required companion skills
 

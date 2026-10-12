@@ -31,16 +31,17 @@ All flags optional. Pass `--no-board` / `--no-jira` for anything declined in ste
 - `todo/` skeleton: `features/` or `phase-N/` folders (from `--phases`), `bugs/`, `archive/` (empty folders get a `.gitkeep`)
 - `todo/inbox.md` with default headers: `## General`, `## Misc`, `## Phase N` (only the chosen phases)
 - `todo/backlog.md`, `todo/misc.md`
-- `todo/_board.base` — six tables (Obsidian Bases), all filtered to files that have `status` and `status != "done"`:
+- `todo/_board.base` — seven tables (Obsidian Bases), all filtered to files that have `status` and `status != "fin"`:
   - **All** — every open task: columns name (title)/stage/type/phase*/created (shown as `DD/MM/YYYY`)/jira + a narrow `file.name` for click-to-open (`phase` only in phase projects), sorted by the raw `created` date (oldest first) → `type` (ASC = bug < feature < refactor, so bugs float up) → `name` (a–z). All stage views share its columns, sort and widths; `phase` appears in every view for phase projects.
   - **Todo** — `stage == "todo"`: newly triaged work waiting for the dev to prepare; AI does not start these tasks.
   - **Preop** — `stage == "preop"`: short-term information or test results the dev is waiting for; AI does not start these tasks.
   - **Mise** — `stage == "mise"`: details prepared by the dev, ready for todo-next or todo-parallel.
   - **WIP** — `stage == "wip"`: work in flight, including Tester-rejected rework — pick it up again via todo-next.
-  - **Testing** — `stage == "test"`: complete, awaiting dev test, Jira, or Tester. Adds editable `status` and `done` columns after `stage`: revert stage to `wip` on rejection and record the reason in `## Progress`, or close by setting the `done` date **first** and `status: done` second (the row leaves the board the moment status flips) — or close in one command with todo-finish.
+  - **Probe** — `stage == "probe"`: implementation complete, awaiting dev testing. After the dev explicitly confirms their test passed, set `gate` manually or via todo-finish --pass. Automated tests passing alone do not qualify. Rejection returns to `wip` with the reason in `## Progress`.
+  - **Gate** — `stage == "gate"`: dev-confirmed pass, awaiting Jira/Tester or final acceptance. Adds editable `status` and `done` columns after `stage`: rejection returns to `wip` with its reason in Progress; acceptance closes by setting the `done` date **first** and `status: fin` second (the row leaves the board the moment status flips), or via todo-finish --done. Jira Done or the user's declaration that a ticket-less task is finished remains the closing condition.
   Filled-vs-empty is read straight from the values; related-files completeness cannot appear here — Bases reads frontmatter only, that check belongs to todo-audit.
 - `todo/jira.md` — live JQL via the community *Jira Issue* plugin: one block for all unresolved work of the current user, plus an optional compact per-project table block (`query:` / `columns:` / `limit:`) the user customizes
-- `## Todo workflow` rules in `AGENTS.md` (created if missing; skipped if the heading exists) — the rules text lives in init.py's `RULES` constant, single source of truth
+- `## Todo workflow` rules in `AGENTS.md` (created if missing; skipped if the heading exists) — the rules text lives in init.py's `RULES` constant, single source of truth. It includes the destination for user-requested recap: append a dated `## Before / After` report in the task file and reply with a link, unless the user requests another destination. It does not invoke recap automatically.
 - `/todo/.obsidian/` line in `.gitignore`
 
 `--from` copies the legacy file **verbatim** — format-agnostic by design: its `##` headers are preserved, content before the first `##` header lands under `## General`. Decoding tries utf-8-sig (UTF-8 with or without BOM) → cp874 → latin-1. A legacy file named TODO/todo that blocks the `todo/` folder is renamed to `todo.imported` after seeding.
@@ -58,7 +59,7 @@ Create the same pieces by hand — the exact contents live as constants in init.
 ### 5. Closing summary — after the script, tell the user
 
 - If the board was created: enable the **Bases core plugin** in Obsidian, open `todo/_board.base`, refine columns/sort in its editor. Built-in view types are `table` and `cards` only — never write `type: board` (unknown-view error).
-- For an existing project, `init.py` leaves `_board.base` and an existing `## Todo workflow` in `AGENTS.md` untouched. Add the Todo view by hand using another stage view as a model and `stage == "todo"`; update any missing Preop/Mise views and stage rules (1 and 3) from `RULES` in `init.py`, then classify existing `todo` files as `todo`, `preop`, or `mise`. Keep `backlog.md` as-is.
+- For an existing project, `init.py` leaves `_board.base` and an existing `## Todo workflow` in `AGENTS.md` untouched. Report which pieces were created or skipped; do not rewrite existing rules or views. Keep `backlog.md` as-is.
 - If `jira.md` was created: it needs the community **Jira Issue** plugin + auth (Cloud and Server both supported) — and on Jira Cloud enable the **"Use 2025 search api"** toggle in the plugin's Account settings, otherwise `jira-search` blocks fail with `Missing API`. Scope the JQL with `project = KEY` or `sprint in openSprints()` — there is no `board` field in JQL.
 - Limitation: entries inside `misc.md`/`backlog.md` are list lines, not files — they never appear on the board; `todo-next` surfaces them instead.
 - `todo/` items only land in `misc.md` when they came from a `## Misc` inbox section or the dev said so — never by AI's own judgment.

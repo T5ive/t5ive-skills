@@ -7,7 +7,7 @@ Usage:
 Checks:
     paths     ## Related files section is empty outside todo/preop (not
               visible on the board — Bases reads frontmatter only)
-    done-date status done and no done date (done files are filtered off the
+    done-date status fin and no done date (closed files are filtered off the
               board; sweep needs the date to pick the archive folder)
 
 jira/phase are NOT checked — emptiness is visible on the board's columns.
@@ -98,7 +98,7 @@ def main():
         missing = []
         if on("paths") and fm.get("stage") not in {"todo", "preop"} and not section_body(text, "Related files"):
             missing.append("paths")
-        if on("done-date") and fm.get("status") == "done" and not fm.get("done"):
+        if on("done-date") and fm.get("status") == "fin" and not fm.get("done"):
             missing.append("done-date")
         if missing:
             rows.append((p, missing))
