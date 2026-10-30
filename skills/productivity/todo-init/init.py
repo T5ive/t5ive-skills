@@ -2,16 +2,17 @@
 """todo-init: bootstrap the todo/ task system in a project. Idempotent.
 
 Usage:
-    python init.py [project-root] [--phases "2,3,4"] [--from legacy-notes-file]
+    python init.py [project-root] [--jira|--no-jira-support] [--no-jira]
+                   [--phases "2,3,4"] [--from legacy-notes-file]
 
 Creates the todo/ skeleton (features/ or phase-N/ folders, bugs/, archive/),
 inbox.md with default headers (General, Misc, Phase N), backlog.md, misc.md,
-_board.base (starter Obsidian Bases config) and jira.md (live JQL list via
-the community Jira Issue plugin); appends the Todo workflow rules to AGENTS.md
-(created if missing, skipped if the section exists); ensures /todo/.obsidian/
-is gitignored. --from seeds inbox.md with an existing notes file verbatim
-(its ## headers are preserved; header-less content lands under ## General).
-Reports created vs skipped for every piece.
+_board.base (starter Obsidian Bases config), optional Jira artifacts and rules,
+and appends the Todo workflow rules to AGENTS.md (created if missing, skipped
+if the section exists); ensures /todo/.obsidian/ is gitignored. --from seeds
+inbox.md with an existing notes file verbatim (its ## headers are preserved;
+header-less content lands under ## General). Reports created vs skipped for
+every piece.
 """
 import argparse
 import os
@@ -23,16 +24,21 @@ RULES = """## Todo workflow
 
 Task files live in `todo/` — 1 file = 1 feature/bug/refactor, kebab-case English filename, short title (Thai or English) in the `name` property (no `#` heading needed).
 
-1. Jira is the source of truth for its own status. Files use `status: open|fin` and `stage: todo|preop|mise|wip|probe|gate` (dev-side workflow) — never mirror Jira's InProgress/Test into the file. An explicit todo-finish closure updates the task file as requested without changing Jira.
-2. Set `status: fin` + `done: YYYY-MM-DD` when Jira reaches Done, or when the user explicitly orders closure. A bare todo-finish invocation means `--done all` for eligible open Gate tasks, including Jira-linked tasks regardless of Jira status. The `done` field remains the closing date.
-3. Triage creates `stage: todo`. The dev sets `preop` while waiting for short-term information or test results, then `mise` when details are ready. AI leaves `todo` and `preop` alone, sets `wip` when work starts and `probe` when implementation is complete. Only after the dev explicitly confirms their test passed, move `probe` to `gate` (manually or via todo-finish --pass). Automated tests passing alone do not confirm dev testing. `gate` waits for Jira/Tester or final acceptance. A failed dev test or Tester rejection returns `probe`/`gate` to `wip` with the reason in `## Progress`.
+1. Files use `status: open|fin` and `stage: todo|preop|mise|wip|probe|gate` (dev-side workflow).
+2. Set `status: fin` + `done: YYYY-MM-DD` when the user explicitly orders closure. A bare todo-finish invocation means `--done all` for eligible open Gate tasks. The `done` field remains the closing date.
+3. Triage creates `stage: todo`. The dev sets `preop` while waiting for short-term information or test results, then `mise` when details are ready. AI leaves `todo` and `preop` alone, sets `wip` when work starts and `probe` when implementation is complete. Only after the dev explicitly confirms their test passed, move `probe` to `gate` (manually or via todo-finish --pass). Automated tests passing alone do not confirm dev testing. `gate` waits for Tester or final acceptance. A failed dev test or Tester rejection returns `probe`/`gate` to `wip` with the reason in `## Progress`.
 4. Never delete or move task files. Archiving happens only via the sweep command.
 5. Read the task file before starting work on it.
 6. When starting work, fill `## Related files` if the user left it empty or incomplete; skip if `## Progress` already records the files.
 7. At the end of a work session append one line to the task file: `- YYYY-MM-DD: <what happened>` (append only).
-8. When a Jira ticket is created for this task, set `jira: JIRA:KEY-123` (Jira Issue plugin inline format).
-9. Customer change requests are `type: feature`: append to the still-open original feature file; create a new file only if the original is fin or archived.
-10. When the user requests `recap` for a task with a todo file, append a dated report under `## Before / After` in that task file, preserve previous reports, and reply briefly in chat with a link. An explicit user destination overrides this rule. This sets the destination only; it does not invoke recap automatically or change task status.
+8. Customer change requests are `type: feature`: append to the still-open original feature file; create a new file only if the original is fin or archived.
+9. When the user requests `recap` for a task with a todo file, append a dated report under `## Before / After` in that task file, preserve previous reports, and reply briefly in chat with a link. An explicit user destination overrides this rule. This sets the destination only; it does not invoke recap automatically or change task status.
+"""
+
+JIRA_RULES = """
+### Jira
+
+Jira is the source of truth for ticket status; task files do not mirror Jira's intermediate statuses. Add `jira: JIRA:KEY-123` only when the task has a Jira ticket; otherwise omit the property. When Jira reaches Done, set `status: fin` + `done: YYYY-MM-DD`. An explicit todo-finish closure also closes eligible Gate tasks regardless of Jira status and does not change Jira.
 """
 
 INBOX_INTRO = """# Inbox
@@ -49,10 +55,11 @@ MISC = """# Misc
 Misc / questions / remarks
 """
 
-def view_layout(with_phase: bool, closing: bool = False) -> str:
+def view_layout(with_phase: bool, closing: bool = False, with_jira: bool = True) -> str:
     """Shared columns, sort, and widths for every board view."""
     phase_col = "      - phase\n" if with_phase else ""
     closing_cols = "      - status\n      - done\n" if closing else ""
+    jira_col = "      - jira\n" if with_jira else ""
     return (
         "    order:\n"
         "      - name\n"
@@ -61,7 +68,7 @@ def view_layout(with_phase: bool, closing: bool = False) -> str:
         + "      - type\n"
         + phase_col
         + "      - formula.created_display\n"
-        + "      - jira\n"
+        + jira_col
         + "      - file.name\n"
         + "    sort:\n"
         + "      - property: created\n"
@@ -76,7 +83,7 @@ def view_layout(with_phase: bool, closing: bool = False) -> str:
     )
 
 
-def stage_view(name: str, stage: str, with_phase: bool) -> str:
+def stage_view(name: str, stage: str, with_phase: bool, with_jira: bool) -> str:
     """One table view pinned to a single stage."""
     return (
         "  - type: table\n"
@@ -84,11 +91,11 @@ def stage_view(name: str, stage: str, with_phase: bool) -> str:
         "    filters:\n"
         "      and:\n"
         f'        - stage == "{stage}"\n'
-        + view_layout(with_phase, closing=stage == "gate")
+        + view_layout(with_phase, closing=stage == "gate", with_jira=with_jira)
     )
 
 
-def board_yaml(with_phase: bool) -> str:
+def board_yaml(with_phase: bool, with_jira: bool = True) -> str:
     """Build the _board.base content. No placeholders — the returned string is final."""
     return (
         "filters:\n"
@@ -103,14 +110,18 @@ def board_yaml(with_phase: bool) -> str:
         "views:\n"
         "  - type: table\n"
         "    name: All\n"
-        + view_layout(with_phase)
-        + stage_view("Todo", "todo", with_phase)
-        + stage_view("Preop", "preop", with_phase)
-        + stage_view("Mise", "mise", with_phase)
-        + stage_view("WIP", "wip", with_phase)
-        + stage_view("Probe", "probe", with_phase)
-        + stage_view("Gate", "gate", with_phase)
+        + view_layout(with_phase, with_jira=with_jira)
+        + stage_view("Todo", "todo", with_phase, with_jira)
+        + stage_view("Preop", "preop", with_phase, with_jira)
+        + stage_view("Mise", "mise", with_phase, with_jira)
+        + stage_view("WIP", "wip", with_phase, with_jira)
+        + stage_view("Probe", "probe", with_phase, with_jira)
+        + stage_view("Gate", "gate", with_phase, with_jira)
     )
+
+
+def workflow_rules(with_jira: bool) -> str:
+    return RULES + (JIRA_RULES if with_jira else "")
 
 JIRA_MD = """# Jira — Open Work
 
@@ -154,8 +165,14 @@ def main():
                     help="legacy notes file to seed inbox.md verbatim")
     ap.add_argument("--no-board", action="store_true",
                     help="skip creating todo/_board.base")
+    jira_group = ap.add_mutually_exclusive_group()
+    jira_group.add_argument("--jira", dest="with_jira", action="store_true",
+                            help="enable Jira board and task-link support (default)")
+    jira_group.add_argument("--no-jira-support", dest="with_jira", action="store_false",
+                            help="omit Jira board column, jira.md, and workflow rules")
+    ap.set_defaults(with_jira=True)
     ap.add_argument("--no-jira", action="store_true",
-                    help="skip creating todo/jira.md")
+                    help="skip creating todo/jira.md while keeping Jira support")
     args = ap.parse_args()
 
     try:
@@ -264,10 +281,12 @@ def main():
         if board.exists():
             note(False, "file exists: todo/_board.base (left untouched)")
         else:
-            board.write_text(board_yaml(bool(phases)), encoding="utf-8")
+            board.write_text(board_yaml(bool(phases), args.with_jira), encoding="utf-8")
             note(True, "file created: todo/_board.base (enable the Bases core plugin, refine in its editor)")
 
-    if args.no_jira:
+    if not args.with_jira:
+        note(False, "jira.md skipped (--no-jira-support)")
+    elif args.no_jira:
         note(False, "jira.md skipped (--no-jira)")
     else:
         jira_md = root / "todo" / "jira.md"
@@ -285,7 +304,7 @@ def main():
         with agents.open("a", encoding="utf-8") as fh:
             if agents.exists() and agents.stat().st_size > 0:
                 fh.write("\n\n")
-            fh.write(RULES)
+            fh.write(workflow_rules(args.with_jira))
         note(True, "rules appended: AGENTS.md -> ## Todo workflow")
 
     # --- .gitignore ----------------------------------------------------------

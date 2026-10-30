@@ -7,6 +7,7 @@ from pathlib import Path
 
 
 SCRIPT = Path(__file__).resolve().parents[1] / "skills/productivity/todo-init/init.py"
+TRIAGE_SKILL = Path(__file__).resolve().parents[1] / "skills/productivity/todo-triage/SKILL.md"
 
 
 def run_init(root, *args):
@@ -31,6 +32,15 @@ def view_layout(board, name):
 
 
 class TodoInitTests(unittest.TestCase):
+    def test_triage_template_omits_unlinked_jira_property(self):
+        content = TRIAGE_SKILL.read_text(encoding="utf-8")
+        match = re.search(r"## Task file template\s+```markdown\s+(.*?)\s+```", content, re.S)
+
+        self.assertIsNotNone(match)
+        frontmatter = match.group(1).split("## Raw", 1)[0]
+        self.assertNotRegex(frontmatter, r"(?m)^jira:")
+        self.assertIn("only when the task has an existing Jira ticket", content)
+
     def test_invalid_phase_writes_nothing(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp) / "project"
@@ -92,6 +102,8 @@ class TodoInitTests(unittest.TestCase):
 
             self.assertEqual(result.returncode, 0, result.stderr)
             board = (root / "todo/_board.base").read_text(encoding="utf-8")
+            self.assertTrue((root / "todo/jira.md").is_file())
+            self.assertIn("      - jira\n", view_layout(board, "All"))
             self.assertIn('status != "fin"', board)
             self.assertEqual(board.count("  - type: table"), 7)
             self.assertIn("name: All", board)
@@ -122,6 +134,41 @@ class TodoInitTests(unittest.TestCase):
             rules = (root / "AGENTS.md").read_text(encoding="utf-8")
             self.assertIn("stage: todo|preop|mise|wip|probe|gate", rules)
             self.assertIn("status: open|fin", rules)
+            self.assertIn("### Jira", rules)
+
+    def test_no_jira_omits_all_generated_jira_artifacts(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            result = subprocess.run(
+                [sys.executable, str(SCRIPT), str(root), "--no-jira-support"],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertFalse((root / "todo/jira.md").exists())
+            board = (root / "todo/_board.base").read_text(encoding="utf-8")
+            self.assertNotIn("jira", board.lower())
+            rules = (root / "AGENTS.md").read_text(encoding="utf-8")
+            self.assertNotIn("jira", rules.lower())
+
+    def test_no_jira_flag_skips_only_jira_md(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            result = subprocess.run(
+                [sys.executable, str(SCRIPT), str(root), "--jira", "--no-jira"],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertFalse((root / "todo/jira.md").exists())
+            board = (root / "todo/_board.base").read_text(encoding="utf-8")
+            self.assertIn("      - jira\n", view_layout(board, "All"))
+            rules = (root / "AGENTS.md").read_text(encoding="utf-8")
+            self.assertIn("### Jira", rules)
 
     def test_stage_views_keep_phase_column(self):
         with tempfile.TemporaryDirectory() as tmp:

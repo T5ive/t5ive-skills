@@ -74,6 +74,22 @@ class TodoFinishTests(unittest.TestCase):
             self.assertIn("- 2026-09-20: started", text)
             self.assertLess(text.index("status: fin"), text.index("done: 2026-09-24"))
 
+    def test_done_closes_jira_linked_task_without_status_lookup(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            todo = Path(tmp) / "todo"
+            (todo / "features").mkdir(parents=True)
+            target = todo / "features/linked.md"
+            target.write_text(
+                task_file().replace("created: 2026-09-20\n", "created: 2026-09-20\njira: ABC-123\n"),
+                encoding="utf-8",
+            )
+
+            result = run_finish(todo, "--done", "features/linked.md", "--date", "2026-09-24")
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn("done: 2026-09-24", target.read_text(encoding="utf-8"))
+            self.assertIn("+ fin: features/linked.md", result.stdout)
+
     def test_done_inserts_missing_done_line(self):
         with tempfile.TemporaryDirectory() as tmp:
             todo = Path(tmp) / "todo"

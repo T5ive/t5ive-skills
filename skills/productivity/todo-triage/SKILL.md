@@ -36,8 +36,7 @@ type: feature        # feature | bug | refactor
 created: 2026-09-23  # date the file was created — set once at creation, never change
 name: <short task title>
 phase:               # phase-based projects only, from the inbox header
-jira:                # set once the Jira ticket exists — JIRA:KEY-123
-done:                # set (YYYY-MM-DD) when Jira reaches Done or todo-finish closes the task
+done:                # set (YYYY-MM-DD) when the task is closed
 ---
 
 ## Raw
@@ -74,5 +73,6 @@ Decide while classifying (same pass, no extra analysis):
 ## Rules
 
 - `refactor` tasks also live in `features/`; the `type` field distinguishes them.
+- Include `jira: JIRA:KEY-123` only when the task has an existing Jira ticket; otherwise omit the property.
 - An open file already covering the same topic → append there, don't duplicate.
 - If an inbox item adds work to a matching task at `stage: probe` or `gate`, return it to `stage: wip`.
