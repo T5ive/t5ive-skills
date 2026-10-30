@@ -18,7 +18,7 @@ stateDiagram-v2
     probe --> wip: ไม่ผ่าน — จดเหตุผลใน Progress
     probe --> gate: dev ยืนยันว่าทดสอบผ่าน — todo-finish --pass หรือบอร์ด
     gate --> wip: Tester ไม่ผ่าน — จดเหตุผลใน Progress
-    gate --> fin: Jira Done / ผู้ใช้ยืนยันจบ — todo-finish --done หรือบอร์ด
+    gate --> fin: Jira Done / ผู้ใช้สั่งปิด — todo-finish --done (เปล่า = all) หรือบอร์ด
     todo --> fin: ไม่มี ticket ผู้ใช้ประกาศจบ
     fin --> [*]: sweep เก็บ archive/YYYY-MM
     note right of gate
@@ -49,7 +49,7 @@ stateDiagram-v2
 | wip → probe | จบ session ที่งานเสร็จ | AI | ใน session / todo-parallel step 5 |
 | probe → gate | dev ยืนยันว่าทดสอบผ่าน | dev หรือ AI ตามคำสั่ง | บอร์ด Probe หรือ `finish.py --pass` พร้อมบันทึกผลใน Progress |
 | probe / gate → wip | dev test หรือ Tester ไม่ผ่าน | dev หรือ AI | แก้ stage ในบอร์ดหรือ `finish.py --revert` พร้อมเหตุผลใน `## Progress` |
-| gate → fin | Jira Done (หรืองานไม่มี ticket และผู้ใช้ประกาศจบ) | dev หรือ script | `todo-finish --done` หรือแก้ cell ใน view Gate |
+| gate → fin | Jira Done หรือผู้ใช้สั่งปิด (รวม Jira-linked tasks) | dev หรือ script | `todo-finish --done`; เรียกเปล่าคือ `--done all` หรือแก้ cell ใน view Gate |
 | fin → archive | เก็บกวาด | AI ตามคำสั่ง | todo-sweep — `git mv` ไป `todo/archive/YYYY-MM/` |
 
 **ข้อควรระวังตอนปิดงานมือในบอร์ด:** ใส่คอลัมน์ `done` (วันที่) **ก่อน** เปลี่ยน `status: fin` —
@@ -130,7 +130,7 @@ sequenceDiagram
 - **(5–6) เลือกและลงมือ:** todo-next เสนอเฉพาะ `mise`/`wip` หรือระบุไฟล์ที่พร้อมเอง → `mise → wip` — งานไม่เกี่ยวกัน 2–3 งานใช้ todo-parallel (5.1) ได้ → จบ session ที่งานเสร็จ AI append `## Progress` + `stage: probe` โดยยังไม่ commit
 - **(7) dev test:** ไม่ผ่าน (7.2) → `stage: wip` พร้อมจดเหตุผลใน Progress แล้วแก้จนกลับ `probe`; ผ่านแล้ว dev เปลี่ยน `probe → gate` ในบอร์ดหรือสั่ง todo-finish --pass พร้อมบันทึก Progress แล้วระบุงานที่จะ commit โดยแยกหนึ่ง commit ต่องาน จากนั้นย้าย Jira เป็น Test **manual บน Jira — AI ช่วยไม่ได้**
 - **(8.1) Tester ไม่ผ่าน:** dev แก้ stage เป็น wip ในบอร์ด (หรือ `finish.py --revert`) + **แนบเหตุผลลง `## Progress` เสมอ** — งานขึ้น view WIP แล้ว todo-next จัดอันดับให้ทำต่อ (วนกลับไปขั้นแก้งาน)
-- **(8.2 / 8.3) Tester ผ่านและ Jira Done (หรืองานไม่มี ticket ผู้ใช้ประกาศจบ) — เลือกทางหนึ่ง:** ปิดมือในบอร์ด (8.2: ใส่ done date **ก่อน** status: fin เพราะ row หายทันที) หรือเรียก todo-finish (8.3: `status: fin` + done วันนี้ในคำสั่งเดียว)
+- **(8.2 / 8.3) ปิด Gate:** เมื่อ Jira Done ให้ปิดในบอร์ดหรือเรียก todo-finish; ผู้ใช้สั่ง todo-finish โดยตรงก็ปิดได้แม้ยังไม่ยืนยัน Jira Done และเรียก skill เปล่า ๆ หมายถึง `--done all` สำหรับ Gate ที่เปิดอยู่ทั้งหมด
 - **(ปิดท้าย) เก็บกวาด:** todo-sweep ย้ายไฟล์ไป `todo/archive/YYYY-MM/` ตามเดือนของวันที่ done
 
 เมื่อผู้ใช้สั่ง `recap` จะสรุปก่อน–หลังและบันทึกตามปลายทางที่ผู้ใช้กำหนดหรือกฎ AGENTS; ค่าเริ่มต้นของโปรเจกต์ todo ใหม่คือไฟล์งานนั้น รายงานไม่เปลี่ยน stage/status และ automated tests ผ่านไม่แทนคำยืนยัน dev test

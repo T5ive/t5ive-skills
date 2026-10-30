@@ -17,7 +17,7 @@ Use this reference to distinguish nearby workflows. Check the current host's ski
 - `todo-audit`: report missing related paths outside `todo`/`preop` and missing closing dates.
 - `todo-sweep`: archive `status: fin` task files into `todo/archive/YYYY-MM/`.
 - `todo-parallel`: run unrelated `mise`/`wip` tasks as parallel subagents; commit explicitly selected tasks only after dev tests pass.
-- `todo-finish`: record dev-confirmed passes (`probe → gate`), close accepted Gate tasks (`status: fin` + `done:` date), or revert Probe/Gate to `wip`; append each result to Progress.
+- `todo-finish`: record dev-confirmed passes (`probe → gate`), close Gate tasks (`status: fin` + `done:` date; a bare invocation closes all eligible Gate tasks), or revert Probe/Gate to `wip`; append each result to Progress.
 
 ## Matt Pocock v1.3.1
 

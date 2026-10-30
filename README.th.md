@@ -19,7 +19,7 @@ Plugin สำหรับ Codex และ Claude Code รวมสกิลช�
 | `todo-audit` | Productivity | รายงาน Related files ที่ขาดนอก `todo`/`preop` และวันที่ done ที่ขาด |
 | `todo-sweep` | Productivity | ย้ายไฟล์ `status: fin` ลง `todo/archive/YYYY-MM/` พร้อมเสนอ commit |
 | `todo-parallel` | Productivity | รัน 2-3 งาน `mise`/`wip` ที่ไม่เกี่ยวกันเป็น subagents; commit เฉพาะงานที่ผู้ใช้เลือกหลัง dev test ผ่าน |
-| `todo-finish` | Productivity | บันทึก dev ผ่าน (`probe → gate`), ปิดงาน Gate หรือคืนงานไป `wip` พร้อม Progress |
+| `todo-finish` | Productivity | บันทึก dev ผ่าน (`probe → gate`), ปิดงาน Gate (เรียกเปล่า ๆ = ปิด Gate ที่เปิดทั้งหมด) หรือคืนงานไป `wip` พร้อม Progress |
 
 ไดอะแกรม workflow ของระบบ todo (วงจรงาน + scenario ตัวอย่างจริง): [skills/references/todo-diagrams.md](skills/references/todo-diagrams.md) — ต้นฉบับ `.mmd` อยู่ใน `assets/`
 

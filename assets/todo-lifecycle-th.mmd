@@ -9,7 +9,7 @@ stateDiagram-v2
     probe --> wip: ไม่ผ่าน — จดเหตุผลใน Progress
     probe --> gate: dev ยืนยันว่าทดสอบผ่าน — todo-finish --pass หรือบอร์ด
     gate --> wip: Tester ไม่ผ่าน — จดเหตุผลใน Progress
-    gate --> fin: Jira Done / ผู้ใช้ยืนยันจบ — todo-finish --done หรือบอร์ด
+    gate --> fin: Jira Done / ผู้ใช้สั่งปิด — todo-finish --done (เปล่า = all) หรือบอร์ด
     todo --> fin: ไม่มี ticket ผู้ใช้ประกาศจบ
     fin --> [*]: sweep เก็บ archive/YYYY-MM
     note right of gate

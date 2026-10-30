@@ -23,8 +23,8 @@ RULES = """## Todo workflow
 
 Task files live in `todo/` — 1 file = 1 feature/bug/refactor, kebab-case English filename, short title (Thai or English) in the `name` property (no `#` heading needed).
 
-1. Jira is the only source of truth for acceptance. Files use `status: open|fin` and `stage: todo|preop|mise|wip|probe|gate` (dev-side workflow) — never mirror Jira's InProgress/Test into the file.
-2. Set `status: fin` + `done: YYYY-MM-DD` when Jira reaches Done, or when the user declares a ticket-less task finished. The `done` field remains the closing date.
+1. Jira is the source of truth for its own status. Files use `status: open|fin` and `stage: todo|preop|mise|wip|probe|gate` (dev-side workflow) — never mirror Jira's InProgress/Test into the file. An explicit todo-finish closure updates the task file as requested without changing Jira.
+2. Set `status: fin` + `done: YYYY-MM-DD` when Jira reaches Done, or when the user explicitly orders closure. A bare todo-finish invocation means `--done all` for eligible open Gate tasks, including Jira-linked tasks regardless of Jira status. The `done` field remains the closing date.
 3. Triage creates `stage: todo`. The dev sets `preop` while waiting for short-term information or test results, then `mise` when details are ready. AI leaves `todo` and `preop` alone, sets `wip` when work starts and `probe` when implementation is complete. Only after the dev explicitly confirms their test passed, move `probe` to `gate` (manually or via todo-finish --pass). Automated tests passing alone do not confirm dev testing. `gate` waits for Jira/Tester or final acceptance. A failed dev test or Tester rejection returns `probe`/`gate` to `wip` with the reason in `## Progress`.
 4. Never delete or move task files. Archiving happens only via the sweep command.
 5. Read the task file before starting work on it.

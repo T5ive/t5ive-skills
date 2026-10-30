@@ -37,7 +37,7 @@ created: 2026-09-23  # date the file was created — set once at creation, never
 name: <short task title>
 phase:               # phase-based projects only, from the inbox header
 jira:                # set once the Jira ticket exists — JIRA:KEY-123
-done:                # set (YYYY-MM-DD) only when Jira reaches Done
+done:                # set (YYYY-MM-DD) when Jira reaches Done or todo-finish closes the task
 ---
 
 ## Raw

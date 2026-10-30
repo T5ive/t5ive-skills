@@ -43,14 +43,18 @@ sequenceDiagram
         Dev->>F: บอร์ด Gate: แก้ stage gate → wip
         Dev->>F: append Progress: Tester ไม่ผ่าน เพราะ xxx
         Note over F: ขึ้น view WIP — todo-next เจอและจัดอันดับให้ทำต่อ
-    else (8.2 / 8.3) Tester ผ่าน
-        Dev->>J: Jira → Done — manual ก่อนปิดไฟล์งาน
-        opt (8.2) ปิดมือในบอร์ด
-            Dev->>F: ใส่ done date ก่อน แล้ว status: fin — row หายทันที
-        end
-        opt (8.3) เรียก todo-finish
-            Dev->>AI: ปิดงาน (todo-finish)
-            AI->>F: status: fin + done: วันนี้
+    else (8.2 / 8.3) ปิด Gate
+        alt Jira Done
+            Dev->>J: Jira → Done — manual
+            alt ปิดมือในบอร์ด
+                Dev->>F: ใส่ done date ก่อน แล้ว status: fin — row หายทันที
+            else todo-finish แบบระบุงาน
+                Dev->>AI: todo-finish --done <file>
+                AI->>F: status: fin + done: วันนี้
+            end
+        else ผู้ใช้สั่งปิดโดยตรง
+            Dev->>AI: todo-finish (เปล่า = --done all)
+            AI->>F: ปิด open Gate ทั้งหมด รวม Jira-linked tasks
         end
         Dev->>AI: เก็บกวาด (todo-sweep)
         AI->>F: git mv → todo/archive/YYYY-MM/
