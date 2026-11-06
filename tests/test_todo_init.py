@@ -134,6 +134,7 @@ class TodoInitTests(unittest.TestCase):
             rules = (root / "AGENTS.md").read_text(encoding="utf-8")
             self.assertIn("stage: todo|preop|mise|wip|probe|gate", rules)
             self.assertIn("status: open|fin", rules)
+            self.assertIn("Treat a dev-set `gate` as that confirmation; preserve it without requiring a separate chat confirmation.", rules)
             self.assertIn("### Jira", rules)
 
     def test_no_jira_omits_all_generated_jira_artifacts(self):
